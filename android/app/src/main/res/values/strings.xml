@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Latha PG Manager</string>
+    <string name="default_server_url">http://10.0.2.2:8000/dashboard/</string>
+    <string name="server_settings_title">PG Server Settings</string>
+    <string name="server_settings_hint">Enter Cloudflare URL or Local IP</string>
+    <string name="save">Save &amp; Connect</string>
+    <string name="cancel">Cancel</string>
+    <string name="retry">Retry Connection</string>
+    <string name="error_connecting">Unable to connect to PG server</string>
+    <string name="error_connecting_desc">Please verify your server is running and your device has internet/WiFi access.</string>
+</resources>

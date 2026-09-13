@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PG Manager Pro - Paying Guest Accommodation Dashboard</title>
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Latha PG" />
+  <link rel="manifest" href="/dashboard/manifest.json" />
+  <link rel="icon" type="image/png" href="/dashboard/icon-192.png" />
+  <link rel="apple-touch-icon" href="/dashboard/icon-192.png" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    [data-tab-btn].active {
+      background-color: #3b82f6;
+      color: #ffffff;
+    }
+    @media print {
+      body * { visibility: hidden; }
+      #printable-receipt-card, #printable-receipt-card * { visibility: visible; }
+      #printable-receipt-card {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 20px !important;
+        border: 2px solid #0f172a !important;
+        box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <!-- Main Container with Sidebar & Content -->
+  <div class="flex-1 flex overflow-hidden">
+    
+    <!-- Mobile Backdrop Overlay -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-slate-950/60 z-30 hidden md:hidden transition-opacity"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shadow-2xl transition-transform duration-300 -translate-x-full md:translate-x-0 md:static md:shadow-xl md:shrink-0">
+      <div>
+        <!-- Brand Header -->
+        <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 bg-amber-500 rounded-xl flex items-center justify-center text-slate-950 shadow-md">
+              <i data-lucide="building-2" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h1 class="font-bold text-white text-sm sm:text-base leading-tight">Latha PG for Gents</h1>
+              <p class="text-xs text-amber-400 font-medium">ಲತಾ ಪಿಜಿ &bull; 2, 3, 4 Sharing</p>
+            </div>
+          </div>
+          <!-- Close button on mobile -->
+          <button onclick="toggleSidebar(false)" class="p-1.5 text-slate-400 hover:text-white rounded-lg md:hidden">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Navigation Links -->
+        <nav class="p-4 space-y-1.5 text-sm font-medium">
+          <button data-tab-btn="overview" onclick="switchTab('overview')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left active">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Overview</span>
+          </button>
+          <button data-tab-btn="rooms" onclick="switchTab('rooms')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
+            <i data-lucide="bed-double" class="w-4 h-4"></i>
+            <span>Rooms & Beds</span>
+          </button>
+          <button data-tab-btn="tenants" onclick="switchTab('tenants')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
+            <i data-lucide="users" class="w-4 h-4"></i>
+            <span>Tenants & KYC</span>
+          </button>
+          <button data-tab-btn="billing" onclick="switchTab('billing')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
+            <i data-lucide="receipt" class="w-4 h-4"></i>
+            <span>Billing & Dues</span>
+          </button>
+          <button data-tab-btn="complaints" onclick="switchTab('complaints')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
+            <i data-lucide="wrench" class="w-4 h-4"></i>
+            <span>Maintenance</span>
+          </button>
+          <button data-tab-btn="meals" onclick="switchTab('meals')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
+            <i data-lucide="utensils" class="w-4 h-4"></i>
+            <span>Mess & Meals</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Status & Docs Link -->
+      <div class="p-4 border-t border-slate-800 space-y-2.5">
+        <div class="bg-slate-800/90 rounded-xl p-3 border border-slate-700/60 shadow-sm">
+          <p class="text-2xs uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
+            <i data-lucide="phone" class="w-3 h-3"></i> PG Helpline
+          </p>
+          <div class="mt-1.5 space-y-1 text-xs">
+            <a href="tel:9353439703" class="flex items-center justify-between text-slate-200 hover:text-amber-300 font-medium">
+              <span>9353439703</span>
+              <span class="text-2xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">Call</span>
+            </a>
+            <a href="tel:9019870803" class="flex items-center justify-between text-slate-200 hover:text-amber-300 font-medium">
+              <span>9019870803</span>
+              <span class="text-2xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">Call</span>
+            </a>
+          </div>
+        </div>
+
+        <a href="/docs" target="_blank" class="flex items-center justify-between px-3 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition">
+          <span class="flex items-center gap-2">
+            <i data-lucide="terminal" class="w-3.5 h-3.5 text-blue-400"></i>
+            Swagger API Docs
+          </span>
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+        </a>
+        <div class="flex items-center gap-2 px-1 text-xs text-slate-400">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span>System: Online (SQLite/PG)</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col overflow-y-auto">
+      
+      <!-- Top Bar -->
+      <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-10">
+        <div class="flex items-center gap-3">
+          <button onclick="toggleSidebar(true)" class="p-2 -ml-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg md:hidden" aria-label="Open menu">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+          <div>
+            <h2 id="page-title" class="text-base sm:text-lg font-semibold text-slate-800 truncate max-w-[170px] sm:max-w-xs md:max-w-none">Executive Overview</h2>
+            <p id="page-subtitle" class="text-2xs sm:text-xs text-slate-500 hidden sm:block">Live occupancy, revenue, and PG operations</p>
+          </div>
+        </div>
+
+        <!-- Quick Actions & Install Button -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- PWA Install Button (shown when installable) -->
+          <button id="pwa-install-btn" style="display: none;" onclick="triggerPwaInstall()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg shadow-sm transition animate-pulse">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Install App</span>
+          </button>
+
+          <button onclick="openModal('modal-onboard')" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg shadow-sm transition">
+            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Onboard</span>
+          </button>
+          <button onclick="openModal('modal-room')" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg shadow-sm transition hidden sm:inline-flex">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+            <span>Add Room</span>
+          </button>
+          <button onclick="openModal('modal-payment')" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg shadow-sm transition">
+            <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Payment</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Tab Content Area -->
+      <main class="p-4 sm:p-6 md:p-8 pb-24 md:pb-8 flex-1 max-w-7xl w-full mx-auto">
+
+        <!-- ==================== TAB 1: OVERVIEW ==================== -->
+        <section id="tab-overview" class="tab-content active space-y-6">
+          <!-- Latha PG Official Banner & Amenities Strip -->
+          <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-slate-800 overflow-hidden relative">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+              
+              <!-- Left: Branding & Banner image thumbnail -->
+              <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+                <div class="w-full sm:w-56 h-32 rounded-xl overflow-hidden border-2 border-amber-400 shadow-md shrink-0 bg-slate-950 flex items-center justify-center">
+                  <img src="/dashboard/banner.jpg" alt="Latha PG Banner" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+                </div>
+                <div>
+                  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-semibold mb-2">
+                    <span>ಲತಾ ಪಿಜಿ - ಪುರುಷರಿಗೆ</span> &bull; <span>Your Home Away From Home</span>
+                  </div>
+                  <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Latha PG for Gents</h2>
+                  <p class="text-xs text-slate-300 mt-1 max-w-lg">
+                    Comfortable, Safe & Affordable <strong>2, 3, 4 Sharing</strong> with <strong>Attached Bathrooms</strong>. Safe Stay, Better Study.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right: Contact Buttons -->
+              <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
+                <a href="tel:9353439703" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition">
+                  <i data-lucide="phone-call" class="w-4 h-4"></i>
+                  Call 9353439703
+                </a>
+                <a href="tel:9019870803" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs border border-white/20 transition">
+                  <i data-lucide="phone" class="w-4 h-4"></i>
+                  Call 9019870803
+                </a>
+              </div>
+            </div>
+
+            <!-- Amenities Pill Strip from Banner -->
+            <div class="mt-6 pt-5 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
+                <div class="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="wifi" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="font-semibold block text-slate-200">Wi-Fi</span>
+                  <span class="text-2xs text-slate-400">High-Speed</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
+                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="video" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="font-semibold block text-slate-200">CCTV</span>
+                  <span class="text-2xs text-slate-400">24/7 Security</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
+                <div class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="shirt" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="font-semibold block text-slate-200">Washing Machine</span>
+                  <span class="text-2xs text-slate-400">Laundry Access</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
+                <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="zap" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="font-semibold block text-slate-200">Power Backup</span>
+                  <span class="text-2xs text-slate-400">Inverter On</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50 col-span-2 sm:col-span-1">
+                <div class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="bath" class="w-4 h-4"></i>
+                </div>
+                <div>
+                  <span class="font-semibold block text-slate-200">Attached Bath</span>
+                  <span class="text-2xs text-slate-400">In Every Room</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Metric KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Occupancy Card -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Occupancy Rate</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <h3 id="stat-occupancy-rate" class="text-2xl font-bold text-slate-900">0%</h3>
+                  <span id="stat-occupied-beds" class="text-xs text-slate-500">0/0 beds</span>
+                </div>
+                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-3 overflow-hidden">
+                  <div id="stat-occupancy-bar" class="bg-blue-600 h-1.5 rounded-full" style="width: 0%"></div>
+                </div>
+              </div>
+              <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+                <i data-lucide="bed" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <!-- Vacant Beds -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Vacant Beds</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <h3 id="stat-available-beds" class="text-2xl font-bold text-emerald-600">0</h3>
+                  <span class="text-xs text-slate-500">Ready for check-in</span>
+                </div>
+                <p class="text-xs text-slate-400 mt-2">Across all room sharing types</p>
+              </div>
+              <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                <i data-lucide="door-open" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <!-- Collections Card -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Revenue Collected</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <h3 id="stat-collected" class="text-2xl font-bold text-slate-900">₹0</h3>
+                </div>
+                <p id="stat-billed" class="text-xs text-slate-500 mt-2">Total Billed: ₹0</p>
+              </div>
+              <div class="h-12 w-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+                <i data-lucide="wallet" class="w-6 h-6"></i>
+              </div>
+            </div>
+
+            <!-- Pending Dues Card -->
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pending Dues</p>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <h3 id="stat-dues" class="text-2xl font-bold text-rose-600">₹0</h3>
+                </div>
+                <p id="stat-unpaid-invoices" class="text-xs text-slate-500 mt-2">Outstanding tenant balance</p>
+              </div>
+              <div class="h-12 w-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
+                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Secondary Grid: Recent Activity & Complaints -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Active Tenants Quick List -->
+            <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <div>
+                  <h4 class="font-semibold text-slate-800 text-sm">Checked-in Tenants</h4>
+                  <p class="text-xs text-slate-500">Currently staying in the PG</p>
+                </div>
+                <button onclick="switchTab('tenants')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All &rarr;</button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                    <tr>
+                      <th class="px-6 py-3">Tenant</th>
+                      <th class="px-6 py-3">Bed</th>
+                      <th class="px-6 py-3">Phone</th>
+                      <th class="px-6 py-3">KYC Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="overview-tenants-tbody" class="divide-y divide-slate-200 text-slate-700">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Urgent Maintenance / Action Items -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-2">
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
+                  Maintenance Alerts
+                </h4>
+                <button onclick="switchTab('complaints')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Manage &rarr;</button>
+              </div>
+              <div id="overview-tickets-list" class="space-y-3">
+                <!-- Loaded dynamically -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== TAB 2: ROOMS & BEDS ==================== -->
+        <section id="tab-rooms" class="tab-content space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
+            <div class="flex items-center gap-4">
+              <span class="text-xs font-semibold text-slate-500 uppercase">Filters:</span>
+              <select id="filter-room-ac" onchange="loadRooms()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All Cooling (AC & Non-AC)</option>
+                <option value="true">AC Only</option>
+                <option value="false">Non-AC Only</option>
+              </select>
+              <select id="filter-room-floor" onchange="loadRooms()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All Floors</option>
+                <option value="1">1st Floor</option>
+                <option value="2">2nd Floor</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-600">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Available</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Occupied</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Maintenance</span>
+            </div>
+          </div>
+
+          <!-- Rooms Grid -->
+          <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Room cards rendered dynamically -->
+          </div>
+        </section>
+
+
+        <!-- ==================== TAB 3: TENANTS & KYC ==================== -->
+        <section id="tab-tenants" class="tab-content space-y-6">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
+            <div class="relative w-full sm:w-80">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+              <input id="search-tenant" oninput="loadTenants()" type="text" placeholder="Search by name or phone..." class="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+            </div>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <select id="filter-tenant-kyc" onchange="loadTenants()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="">All KYC Statuses</option>
+                <option value="VERIFIED">Verified Only</option>
+                <option value="PENDING">Pending Verification</option>
+              </select>
+              <button onclick="openModal('modal-onboard')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg shrink-0 flex items-center gap-2">
+                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Onboard
+              </button>
+            </div>
+          </div>
+
+          <!-- Tenants Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                  <tr>
+                    <th class="px-6 py-3.5">Tenant Details</th>
+                    <th class="px-6 py-3.5">Room & Bed</th>
+                    <th class="px-6 py-3.5">Occupation</th>
+                    <th class="px-6 py-3.5">KYC Status</th>
+                    <th class="px-6 py-3.5">Deposit</th>
+                    <th class="px-6 py-3.5">Check-In</th>
+                    <th class="px-6 py-3.5 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tenants-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== TAB 4: BILLING & DUES ==================== -->
+        <section id="tab-billing" class="tab-content space-y-6">
+          <div class="flex items-center justify-between">
+            <h3 class="text-base font-semibold text-slate-800">Rent Invoices & Payment Receipts</h3>
+            <div class="flex items-center gap-3">
+              <button onclick="openModal('modal-invoice')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg flex items-center gap-2">
+                <i data-lucide="file-plus" class="w-3.5 h-3.5"></i> Generate Invoice
+              </button>
+              <button onclick="openModal('modal-payment')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg flex items-center gap-2">
+                <i data-lucide="banknote" class="w-3.5 h-3.5"></i> Record Payment
+              </button>
+            </div>
+          </div>
+
+          <!-- Invoices Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200">
+              <h4 class="font-semibold text-slate-800 text-xs uppercase tracking-wider">Invoices & Balances</h4>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                  <tr>
+                    <th class="px-6 py-3">Invoice #</th>
+                    <th class="px-6 py-3">Tenant ID</th>
+                    <th class="px-6 py-3">Month</th>
+                    <th class="px-6 py-3">Total Amount</th>
+                    <th class="px-6 py-3">Paid Amount</th>
+                    <th class="px-6 py-3">Due Date</th>
+                    <th class="px-6 py-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="invoices-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent Payments Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200">
+              <h4 class="font-semibold text-slate-800 text-xs uppercase tracking-wider">Recent Collection Receipts</h4>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                  <tr>
+                    <th class="px-6 py-3">Receipt #</th>
+                    <th class="px-6 py-3">Tenant & Bed</th>
+                    <th class="px-6 py-3">Amount Paid</th>
+                    <th class="px-6 py-3">Method</th>
+                    <th class="px-6 py-3">Ref / UTR</th>
+                    <th class="px-6 py-3">Date</th>
+                    <th class="px-6 py-3 text-right">Receipt Voucher</th>
+                  </tr>
+                </thead>
+                <tbody id="payments-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ==================== TAB 5: COMPLAINTS ==================== -->
+        <section id="tab-complaints" class="tab-content space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-base font-semibold text-slate-800">Maintenance Requests & Tickets</h3>
+              <p class="text-xs text-slate-500">Track and resolve tenant complaints</p>
+            </div>
+            <button onclick="openModal('modal-complaint')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg flex items-center gap-2">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Raise Complaint
+            </button>
+          </div>
+
+          <!-- Tickets List -->
+          <div id="tickets-container" class="space-y-4">
+            <!-- Loaded dynamically -->
+          </div>
+        </section>
+
+
+        <!-- ==================== TAB 6: MESS & MEALS ==================== -->
+        <section id="tab-meals" class="tab-content space-y-6">
+          <!-- Daily Kitchen Headcount Card -->
+          <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <span class="px-2.5 py-1 bg-white/20 rounded-full text-xs font-medium">Kitchen Live Headcount</span>
+              <h3 class="text-xl font-bold mt-2">Today's Dinner Service</h3>
+              <p class="text-xs text-blue-100 mt-1">Calculated automatically from tenant attendance logs</p>
+            </div>
+            <div class="flex items-center gap-6 text-center">
+              <div class="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
+                <span id="headcount-attending" class="text-3xl font-extrabold block">0</span>
+                <span class="text-xs text-blue-100">Dining In</span>
+              </div>
+              <div class="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
+                <span id="headcount-packed" class="text-3xl font-extrabold block">0</span>
+                <span class="text-xs text-blue-100">Packed Lunch</span>
+              </div>
+              <div class="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
+                <span id="headcount-optout" class="text-3xl font-extrabold block">0</span>
+                <span class="text-xs text-blue-100">Opted Out</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Menu Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+              <h4 class="font-semibold text-slate-800 text-sm">7-Day PG Mess Menu</h4>
+              <span class="text-xs text-slate-500">Breakfast &bull; Lunch &bull; Dinner</span>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                  <tr>
+                    <th class="px-6 py-3.5 w-32">Day</th>
+                    <th class="px-6 py-3.5">Breakfast</th>
+                    <th class="px-6 py-3.5">Lunch</th>
+                    <th class="px-6 py-3.5">Dinner</th>
+                  </tr>
+                </thead>
+                <tbody id="meals-tbody" class="divide-y divide-slate-200 text-slate-700">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. Onboard Tenant Modal -->
+  <div id="modal-onboard" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-900 text-base">Onboard New Tenant</h3>
+        <button onclick="closeModal('modal-onboard')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-onboard" onsubmit="handleOnboardTenant(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Full Name *</label>
+            <input name="full_name" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Karan Singhania" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Phone Number *</label>
+            <input name="phone" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="10-digit number" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Email</label>
+            <input name="email" type="email" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="tenant@example.com" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Occupation / College</label>
+            <input name="occupation" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Software Engineer" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Assign Vacant Bed *</label>
+            <select name="bed_id" id="onboard-bed-select" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Loading available beds...</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Security Deposit (₹)</label>
+            <input name="security_deposit" type="number" step="100" value="10000" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">ID Proof Type</label>
+            <select name="id_proof_type" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="Aadhaar">Aadhaar Card</option>
+              <option value="Passport">Passport</option>
+              <option value="Driving License">Driving License</option>
+              <option value="Voter ID">Voter ID</option>
+              <option value="Student ID">College / Student ID</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">ID Proof Number</label>
+            <input name="id_proof_number" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 1234-5678-9012" />
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-onboard')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">Save & Allocate Bed</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Add Room Modal -->
+  <div id="modal-room" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-900 text-base">Add New Room</h3>
+        <button onclick="closeModal('modal-room')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-room" onsubmit="handleAddRoom(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Room Number *</label>
+            <input name="room_number" required placeholder="e.g. 301" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Floor *</label>
+            <input name="floor" type="number" value="1" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Room Type</label>
+            <select name="room_type" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="2-Sharing" selected>2-Sharing (2 Beds)</option>
+              <option value="3-Sharing">3-Sharing (3 Beds)</option>
+              <option value="4-Sharing">4-Sharing (4 Beds)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Base Rent per Bed (₹) *</label>
+            <input name="base_rent" type="number" step="100" value="7500" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <div class="flex items-center gap-4 pt-1">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input name="has_ac" type="checkbox" class="rounded text-blue-600 focus:ring-blue-500" />
+            <span class="font-medium text-slate-700">Air Conditioned (AC)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input name="has_attached_bathroom" type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500" />
+            <span class="font-medium text-slate-700">Attached Bath (Included)</span>
+          </label>
+        </div>
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Amenities</label>
+          <input name="amenities" value="Attached Bathroom, High-Speed Wi-Fi, 24/7 CCTV, Washing Machine, Power Backup" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-room')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-lg font-medium shadow-sm">Create Room & Beds</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. Record Payment Modal -->
+  <div id="modal-payment" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-900 text-base">Record Payment Receipt</h3>
+        <button onclick="closeModal('modal-payment')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-payment" onsubmit="handleRecordPayment(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Select Tenant *</label>
+          <select name="tenant_id" id="payment-tenant-select" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+            <!-- Loaded dynamically -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Amount Paid (₹) *</label>
+            <input name="amount" type="number" step="100" required placeholder="e.g. 9500" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Payment Method</label>
+            <select name="payment_method" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="UPI">UPI (GooglePay / PhonePe)</option>
+              <option value="BANK_TRANSFER">Bank Transfer (NEFT/IMPS)</option>
+              <option value="CASH">Cash Deposit</option>
+              <option value="CARD">Debit / Credit Card</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Reference / Transaction ID</label>
+          <input name="transaction_reference" placeholder="UPI Ref / UTR / Receipt No." class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Notes</label>
+          <input name="notes" placeholder="e.g. Rent for September" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-payment')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium shadow-sm">Save & Issue Receipt</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Generate Invoice Modal -->
+  <div id="modal-invoice" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-900 text-base">Generate Rent Invoice</h3>
+        <button onclick="closeModal('modal-invoice')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-invoice" onsubmit="handleGenerateInvoice(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Select Tenant *</label>
+          <select name="tenant_id" id="invoice-tenant-select" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+            <!-- Loaded dynamically -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Billing Month (YYYY-MM) *</label>
+            <input name="billing_month" value="2026-09" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Due Date *</label>
+            <input name="due_date" type="date" value="2026-09-05" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Rent Amount (₹) *</label>
+            <input name="rent_amount" type="number" step="100" value="9500" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Utility / Electricity (₹)</label>
+            <input name="utility_charges" type="number" step="50" value="500" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-invoice')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-lg font-medium shadow-sm">Create Invoice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. Raise Complaint Modal -->
+  <div id="modal-complaint" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 class="font-semibold text-slate-900 text-base">Raise Complaint / Ticket</h3>
+        <button onclick="closeModal('modal-complaint')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-complaint" onsubmit="handleRaiseComplaint(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Title *</label>
+          <input name="title" required placeholder="e.g. Geyser not heating water" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Category</label>
+            <select name="category" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="PLUMBING">Plumbing</option>
+              <option value="ELECTRICAL">Electrical</option>
+              <option value="WIFI">Wi-Fi / Internet</option>
+              <option value="CLEANING">Room Cleaning</option>
+              <option value="APPLIANCE">Appliance</option>
+              <option value="OTHER">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Priority</label>
+            <select name="priority" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="LOW">Low</option>
+              <option value="MEDIUM" selected>Medium</option>
+              <option value="HIGH">High</option>
+              <option value="URGENT">Urgent</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Detailed Description *</label>
+          <textarea name="description" required rows="3" placeholder="Explain the issue in detail..." class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
+          <button type="button" onclick="closeModal('modal-complaint')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">Submit Ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. View / Print Payment Receipt Modal -->
+  <div id="modal-view-receipt" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+      <!-- Modal Header (No Print) -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 no-print">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+          <i data-lucide="receipt" class="w-4 h-4 text-emerald-600"></i>
+          Official Payment Receipt
+        </h3>
+        <button onclick="closeModal('modal-view-receipt')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <!-- Actual Printable Receipt Card -->
+      <div id="printable-receipt-card" class="border-2 border-slate-800 rounded-xl p-6 bg-white space-y-5 text-slate-900">
+        <!-- Receipt Top Header -->
+        <div class="border-b-2 border-slate-800 pb-4 text-center space-y-1">
+          <div class="inline-block bg-slate-900 text-white font-bold text-xs uppercase px-3 py-1 rounded-md tracking-wider">
+            RENT & ACCOMMODATION RECEIPT
+          </div>
+          <h2 class="text-2xl font-black text-slate-950 tracking-tight pt-1">LATHA PG FOR GENTS</h2>
+          <p class="text-xs text-amber-600 font-bold">ಲತಾ ಪಿಜಿ - ಪುರುಷರಿಗೆ</p>
+          <p class="text-2xs text-slate-500">2, 3, 4 Sharing &bull; Attached Bathrooms &bull; Wi-Fi &bull; CCTV &bull; Power Backup</p>
+          <p class="text-xs font-semibold text-slate-800 pt-0.5">📞 Helpline: 9353439703 / 9019870803</p>
+        </div>
+
+        <!-- Receipt Metadata Grid -->
+        <div class="grid grid-cols-2 gap-4 text-xs">
+          <div>
+            <span class="text-2xs text-slate-400 uppercase font-semibold block">Receipt Number</span>
+            <span id="rcpt-number" class="font-mono font-bold text-slate-900">REC-XXXX</span>
+          </div>
+          <div class="text-right">
+            <span class="text-2xs text-slate-400 uppercase font-semibold block">Date of Payment</span>
+            <span id="rcpt-date" class="font-medium text-slate-800">11-Sep-2026</span>
+          </div>
+          <div class="col-span-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
+            <span class="text-2xs text-slate-500 uppercase font-semibold block">Received with thanks from:</span>
+            <div class="flex items-center justify-between mt-1">
+              <span id="rcpt-tenant-name" class="text-sm font-bold text-slate-900">Tenant Name</span>
+              <span id="rcpt-tenant-phone" class="text-xs text-slate-600 font-medium">9876543210</span>
+            </div>
+            <div class="text-2xs text-slate-500 mt-1">
+              Allocated Room: <strong id="rcpt-room" class="text-slate-800">Room 101</strong> &bull; Bed: <strong id="rcpt-bed" class="text-slate-800">101-A</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Amount Highlight -->
+        <div class="bg-emerald-50 border-2 border-emerald-500/30 rounded-xl p-4 flex items-center justify-between">
+          <div>
+            <span class="text-2xs uppercase text-emerald-800 font-bold tracking-wider block">Amount Received</span>
+            <span class="text-xs text-slate-600" id="rcpt-notes">Monthly Rent & Maintenance</span>
+          </div>
+          <span id="rcpt-amount" class="text-2xl font-black text-emerald-700">₹0.00</span>
+        </div>
+
+        <!-- Payment Mode & Reference -->
+        <div class="grid grid-cols-2 gap-2 text-xs border-t border-slate-200 pt-3">
+          <div>
+            <span class="text-2xs text-slate-400 uppercase block font-semibold">Payment Mode:</span>
+            <span id="rcpt-method" class="font-semibold text-slate-800 uppercase">UPI</span>
+          </div>
+          <div class="text-right">
+            <span class="text-2xs text-slate-400 uppercase block font-semibold">Ref / UTR No:</span>
+            <span id="rcpt-ref" class="font-mono text-2xs text-slate-700">N/A</span>
+          </div>
+        </div>
+
+        <!-- Footer / Signature -->
+        <div class="pt-6 flex items-end justify-between text-2xs text-slate-500 border-t border-slate-100">
+          <div>
+            <p>Computer generated receipt.</p>
+            <p>Subject to realization of funds.</p>
+          </div>
+          <div class="text-center">
+            <div class="h-8 border-b border-slate-400 w-32 mx-auto"></div>
+            <p class="font-semibold text-slate-700 mt-1">Authorized Signatory</p>
+            <p class="text-slate-400">Latha PG for Gents</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons (No Print) -->
+      <div class="flex items-center justify-between gap-3 pt-2 border-t border-slate-100 no-print">
+        <button type="button" onclick="closeModal('modal-view-receipt')" class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">
+          Close
+        </button>
+        <div class="flex items-center gap-2">
+          <button id="rcpt-whatsapp-btn" onclick="shareReceiptOnWhatsApp()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm transition">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            WhatsApp
+          </button>
+          <button onclick="window.print()" class="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm transition">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+            Print / PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-center justify-around z-30 px-1 shadow-2xl">
+    <button onclick="switchTab('overview')" data-mobile-tab="overview" class="flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-medium transition">
+      <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+      <span class="text-2xs mt-1">Overview</span>
+    </button>
+    <button onclick="switchTab('rooms')" data-mobile-tab="rooms" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+      <i data-lucide="bed-double" class="w-5 h-5"></i>
+      <span class="text-2xs mt-1">Rooms</span>
+    </button>
+    <button onclick="switchTab('tenants')" data-mobile-tab="tenants" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+      <i data-lucide="users" class="w-5 h-5"></i>
+      <span class="text-2xs mt-1">Tenants</span>
+    </button>
+    <button onclick="switchTab('billing')" data-mobile-tab="billing" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+      <i data-lucide="receipt" class="w-5 h-5"></i>
+      <span class="text-2xs mt-1">Billing</span>
+    </button>
+    <button onclick="switchTab('meals')" data-mobile-tab="meals" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+      <i data-lucide="utensils" class="w-5 h-5"></i>
+      <span class="text-2xs mt-1">Mess</span>
+    </button>
+  </nav>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-20 md:bottom-5 right-5 z-50 space-y-2"></div>
+
+  <!-- Frontend Logic Application Script -->
+  <script src="/dashboard/app.js"></script>
+</body>
+</html>
