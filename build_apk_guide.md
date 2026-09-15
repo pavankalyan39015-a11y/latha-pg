@@ -8,13 +8,14 @@ This guide explains how to get and install the **Latha PG Manager** app on your 
 
 You do **not** need to compile an APK to get a full native mobile app experience! Thanks to **Progressive Web App (PWA)** technology, you can install the app directly onto your Android phone's home screen.
 
-### Steps:
-1. Double-click `start.bat` on your PC to start the PG API server.
-2. Double-click `share_mobile.bat` to generate your Cloudflare Tunnel public URL (e.g., `https://random-words.trycloudflare.com`).
-3. Open that URL on your Android phone using **Google Chrome**.
-4. You will see an amber **"Install App"** button at the top header. Tap it!
-   - *Alternatively, tap the 3 vertical dots (⋮) in the top-right corner of Chrome and select **"Install app"** or **"Add to Home screen"**.*
-5. Tap **Install**.
+### Steps (1-Click Instant Launcher):
+1. On your PC, double-click **`open_on_phone.bat`**.
+   - This starts the PG server and generates a secure public link automatically.
+   - It also opens a **QR Code** right on your PC screen and in the terminal!
+2. Open your Android phone camera or QR scanner and scan the QR code (or type the generated `https://xxxx.trycloudflare.com` URL in Chrome).
+3. The live **Latha PG** app opens immediately on your phone!
+4. Tap the amber **"Install App"** button at the top (or Chrome menu `⋮` -> **"Install app"** / **"Add to Home screen"**).
+5. The full app icon will appear on your phone home screen and app drawer!
 
 ### ✨ Features of the Installed PWA:
 - App icon on your Android home screen and app drawer named **Latha PG**.
