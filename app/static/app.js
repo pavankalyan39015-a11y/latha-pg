@@ -71,18 +71,18 @@ function switchTab(tabName) {
   // Update Desktop Navigation
   document.querySelectorAll('[data-tab-btn]').forEach(btn => {
     if (btn.getAttribute('data-tab-btn') === tabName) {
-      btn.className = 'w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left active bg-gradient-to-r from-indigo-500/25 to-purple-500/20 text-white border border-indigo-500/35 shadow-lg shadow-indigo-500/10 font-bold';
+      btn.className = 'w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition text-left active bg-[#0B4F9C] text-white font-extrabold border-l-4 border-[#FFD200] shadow-md';
     } else {
-      btn.className = 'w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-white/[0.06] text-slate-300 hover:text-white font-medium';
+      btn.className = 'w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition text-left text-blue-100 hover:bg-[#0B4F9C]/50 hover:text-white font-semibold';
     }
   });
 
   // Update Mobile Navigation
   document.querySelectorAll('[data-mobile-tab]').forEach(btn => {
     if (btn.getAttribute('data-mobile-tab') === tabName) {
-      btn.className = 'mobile-tab-btn active flex flex-col items-center justify-center flex-1 py-1 text-indigo-400 font-bold transition-all duration-200 scale-105';
+      btn.className = 'mobile-tab-btn active flex flex-col items-center justify-center flex-1 py-1 text-[#FFD200] font-black transition-all duration-200 scale-105';
     } else {
-      btn.className = 'mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition-all duration-200 font-medium';
+      btn.className = 'mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-blue-200 hover:text-white transition-all duration-200 font-bold';
     }
   });
 
@@ -192,16 +192,16 @@ async function loadOverview() {
         tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500 text-xs">No active residents recorded yet.</td></tr>`;
       } else {
         tbody.innerHTML = tenants.slice(0, 5).map(t => `
-          <tr class="hover:bg-white/[0.04] transition">
-            <td class="px-6 py-4 font-bold text-white">${t.full_name}</td>
+          <tr class="hover:bg-blue-50/60 transition">
+            <td class="px-6 py-4 font-bold text-[#062B63]">${t.full_name}</td>
             <td class="px-6 py-4">
-              <span class="px-2.5 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-semibold text-2xs">
+              <span class="px-2.5 py-1 rounded-lg bg-[#0B4F9C]/10 text-[#0B4F9C] border border-[#0B4F9C]/30 font-extrabold text-2xs">
                 ${t.bed ? t.bed.bed_number : 'Unassigned'}
               </span>
             </td>
-            <td class="px-6 py-4 text-slate-400 font-mono text-xs">${t.phone}</td>
+            <td class="px-6 py-4 text-slate-600 font-mono text-xs font-semibold">${t.phone}</td>
             <td class="px-6 py-4">
-              <span class="px-2.5 py-1 rounded-full text-2xs font-bold border ${t.kyc_status === 'VERIFIED' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">
+              <span class="px-2.5 py-1 rounded-full text-2xs font-extrabold border ${t.kyc_status === 'VERIFIED' ? 'bg-[#10A875]/15 text-[#10A875] border-[#10A875]/30' : 'bg-[#F36C00]/15 text-[#F36C00] border-[#F36C00]/30'}">
                 ${t.kyc_status}
               </span>
             </td>
@@ -222,12 +222,12 @@ async function loadOverview() {
         ticketsContainer.innerHTML = `<p class="text-xs text-slate-400 py-3 text-center">No pending maintenance alerts. All facilities clear!</p>`;
       } else {
         ticketsContainer.innerHTML = tickets.slice(0, 3).map(tk => `
-          <div class="p-3.5 rounded-xl border border-white/[0.06] bg-white/[0.03] hover:bg-white/[0.06] flex items-start justify-between transition">
+          <div class="p-3.5 rounded-xl border border-slate-200 bg-[#EAF3FA]/60 hover:bg-[#EAF3FA] flex items-start justify-between transition">
             <div>
-              <p class="font-bold text-white text-xs">${tk.title}</p>
-              <p class="text-slate-400 text-2xs mt-0.5">${tk.category} &bull; #${tk.ticket_number}</p>
+              <p class="font-bold text-[#062B63] text-xs">${tk.title}</p>
+              <p class="text-slate-500 text-2xs mt-0.5 font-semibold">${tk.category} &bull; #${tk.ticket_number}</p>
             </div>
-            <span class="px-2 py-0.5 rounded-full text-2xs font-bold border ${tk.priority === 'URGENT' || tk.priority === 'HIGH' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">
+            <span class="px-2 py-0.5 rounded-full text-2xs font-extrabold border ${tk.priority === 'URGENT' || tk.priority === 'HIGH' ? 'bg-[#F21F26]/15 text-[#F21F26] border-[#F21F26]/30' : 'bg-[#F36C00]/15 text-[#F36C00] border-[#F36C00]/30'}">
               ${tk.priority}
             </span>
           </div>
@@ -267,23 +267,23 @@ async function loadRooms() {
 
     grid.innerHTML = rooms.map(room => {
       const bedsHtml = room.beds.map(bed => {
-        let badgeColor = 'bg-emerald-500/15 border-emerald-500/30 text-emerald-300';
-        let dotColor = 'bg-emerald-400';
+        let badgeColor = 'bg-[#10A875]/10 border-[#10A875]/30 text-[#10A875]';
+        let dotColor = 'bg-[#10A875]';
         if (bed.status === 'OCCUPIED') {
-          badgeColor = 'bg-indigo-500/15 border-indigo-500/30 text-indigo-300';
-          dotColor = 'bg-indigo-400';
+          badgeColor = 'bg-[#0B4F9C]/10 border-[#0B4F9C]/30 text-[#0B4F9C]';
+          dotColor = 'bg-[#0B4F9C]';
         } else if (bed.status === 'MAINTENANCE') {
-          badgeColor = 'bg-amber-500/15 border-amber-500/30 text-amber-300';
-          dotColor = 'bg-amber-400';
+          badgeColor = 'bg-[#F36C00]/10 border-[#F36C00]/30 text-[#F36C00]';
+          dotColor = 'bg-[#F36C00]';
         }
 
         return `
-          <div class="px-3 py-2 rounded-xl border ${badgeColor} flex items-center justify-between text-xs font-semibold">
+          <div class="px-3 py-2 rounded-xl border ${badgeColor} flex items-center justify-between text-xs font-bold">
             <span class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full ${dotColor}"></span>
               ${bed.bed_number}
             </span>
-            <span class="text-2xs uppercase tracking-wider font-bold opacity-90">${bed.status}</span>
+            <span class="text-2xs uppercase tracking-wider font-extrabold opacity-90">${bed.status}</span>
           </div>
         `;
       }).join('');
@@ -291,33 +291,33 @@ async function loadRooms() {
       const vacantCount = room.beds.filter(b => b.status === 'AVAILABLE').length;
 
       return `
-        <div class="glass-card rounded-2xl p-6 space-y-4 hover:-translate-y-1.5 transition-all duration-300">
+        <div class="brand-card rounded-2xl p-6 space-y-4 hover:-translate-y-1.5 transition-all duration-300">
           <div class="flex items-start justify-between">
             <div>
               <div class="flex items-center gap-2">
-                <h4 class="text-lg font-extrabold text-white">Room ${room.room_number}</h4>
-                <span class="text-2xs font-semibold px-2 py-0.5 rounded-full bg-white/[0.06] text-slate-300 border border-white/[0.08]">Floor ${room.floor}</span>
+                <h4 class="text-lg font-black text-[#062B63]">Room ${room.room_number}</h4>
+                <span class="text-2xs font-extrabold px-2 py-0.5 rounded-full bg-[#EAF3FA] text-[#062B63] border border-blue-200">Floor ${room.floor}</span>
               </div>
-              <p class="text-xs text-indigo-300 font-semibold mt-1">${room.room_type} &bull; ₹${room.base_rent.toLocaleString('en-IN')}/bed</p>
+              <p class="text-xs text-[#0B4F9C] font-bold mt-1">${room.room_type} &bull; ₹${room.base_rent.toLocaleString('en-IN')}/bed</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-2xs font-bold border ${room.has_ac ? 'bg-sky-500/20 text-sky-300 border-sky-500/30' : 'bg-slate-800 text-slate-400 border-slate-700'}">
+            <span class="px-2.5 py-1 rounded-full text-2xs font-extrabold border ${room.has_ac ? 'bg-[#0B4F9C]/15 text-[#0B4F9C] border-[#0B4F9C]/30' : 'bg-slate-100 text-slate-600 border-slate-200'}">
               ${room.has_ac ? 'AC' : 'Non-AC'}
             </span>
           </div>
 
           <div class="space-y-2 pt-1">
-            <p class="text-2xs uppercase font-bold text-slate-400 tracking-wider">Bed Occupancy</p>
+            <p class="text-2xs uppercase font-extrabold text-slate-500 tracking-wider">Bed Occupancy</p>
             <div class="grid grid-cols-2 gap-2">
               ${bedsHtml}
             </div>
           </div>
 
-          <div class="pt-3 border-t border-white/[0.06] text-2xs text-slate-400 flex items-center justify-between">
-            <span class="truncate max-w-[200px] flex items-center gap-1">
-              <i data-lucide="sparkles" class="w-3 h-3 text-amber-400 shrink-0"></i>
+          <div class="pt-3 border-t border-slate-200 text-2xs text-slate-500 flex items-center justify-between">
+            <span class="truncate max-w-[200px] flex items-center gap-1 font-medium">
+              <i data-lucide="sparkles" class="w-3 h-3 text-[#FFD200] shrink-0 fill-[#FFD200]"></i>
               ${room.amenities || 'Attached Bathroom, Wi-Fi, CCTV'}
             </span>
-            <span class="font-bold ${vacantCount > 0 ? 'text-emerald-400' : 'text-slate-500'}">${vacantCount} vacant</span>
+            <span class="font-extrabold ${vacantCount > 0 ? 'text-[#10A875]' : 'text-slate-400'}">${vacantCount} vacant</span>
           </div>
         </div>
       `;
@@ -367,48 +367,48 @@ function renderTenantsList(tenants) {
   if (!tbody) return;
 
   if (tenants.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-400 text-xs">No matching residents found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-12 text-slate-500 text-xs">No matching residents found.</td></tr>`;
     return;
   }
 
   tbody.innerHTML = tenants.map(t => {
     const cleanPhone = t.phone ? t.phone.replace(/[^0-9]/g, '') : '';
     return `
-      <tr class="hover:bg-white/[0.04] transition">
+      <tr class="hover:bg-blue-50/60 transition">
         <td class="px-6 py-4">
-          <div class="font-bold text-white text-sm">${t.full_name}</div>
-          <div class="text-slate-400 text-2xs mt-0.5 flex items-center gap-2">
+          <div class="font-extrabold text-[#062B63] text-sm">${t.full_name}</div>
+          <div class="text-slate-500 text-2xs mt-0.5 flex items-center gap-2">
             <span>${t.phone}</span>
             ${t.occupation ? `&bull; <span>${t.occupation}</span>` : ''}
           </div>
         </td>
         <td class="px-6 py-4">
-          <span class="px-3 py-1 rounded-lg bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 font-bold text-xs">
+          <span class="px-3 py-1 rounded-lg bg-[#0B4F9C]/10 text-[#0B4F9C] border border-[#0B4F9C]/30 font-extrabold text-xs">
             ${t.bed ? t.bed.bed_number : 'Unassigned'}
           </span>
         </td>
-        <td class="px-6 py-4 text-slate-300 font-medium">${t.check_in_date || 'N/A'}</td>
-        <td class="px-6 py-4 text-slate-200 font-bold">₹${t.security_deposit ? t.security_deposit.toLocaleString('en-IN') : 0}</td>
+        <td class="px-6 py-4 text-slate-600 font-medium">${t.check_in_date || 'N/A'}</td>
+        <td class="px-6 py-4 text-[#062B63] font-black">₹${t.security_deposit ? t.security_deposit.toLocaleString('en-IN') : 0}</td>
         <td class="px-6 py-4">
-          <span class="px-2.5 py-1 rounded-full text-2xs font-bold border ${t.kyc_status === 'VERIFIED' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">
+          <span class="px-2.5 py-1 rounded-full text-2xs font-extrabold border ${t.kyc_status === 'VERIFIED' ? 'bg-[#10A875]/15 text-[#10A875] border-[#10A875]/30' : 'bg-[#F36C00]/15 text-[#F36C00] border-[#F36C00]/30'}">
             ${t.kyc_status}
           </span>
         </td>
         <td class="px-6 py-4 text-right">
           <div class="flex items-center justify-end gap-2">
             ${cleanPhone ? `
-              <a href="https://api.whatsapp.com/send?phone=91${cleanPhone.slice(-10)}" target="_blank" class="p-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 transition">
+              <a href="https://api.whatsapp.com/send?phone=91${cleanPhone.slice(-10)}" target="_blank" class="p-2 rounded-xl bg-[#10A875]/15 hover:bg-[#10A875]/25 text-[#10A875] border border-[#10A875]/30 transition" title="WhatsApp Resident">
                 <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
               </a>
-              <a href="tel:${t.phone}" class="p-2 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30 transition">
+              <a href="tel:${t.phone}" class="p-2 rounded-xl bg-[#0B4F9C]/15 hover:bg-[#0B4F9C]/25 text-[#0B4F9C] border border-[#0B4F9C]/30 transition" title="Call Resident">
                 <i data-lucide="phone" class="w-3.5 h-3.5"></i>
               </a>
             ` : ''}
             ${t.is_active ? `
-              <button onclick="checkoutTenant(${t.id}, '${t.full_name}')" class="px-3 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 text-2xs font-bold transition">
+              <button onclick="checkoutTenant(${t.id}, '${t.full_name}')" class="px-3 py-1.5 rounded-xl border border-[#F21F26]/30 bg-[#F21F26]/10 hover:bg-[#F21F26]/20 text-[#F21F26] text-2xs font-bold transition">
                 Check Out
               </button>
-            ` : `<span class="text-slate-500 text-2xs italic">Checked Out</span>`}
+            ` : `<span class="text-slate-400 text-2xs italic">Checked Out</span>`}
           </div>
         </td>
       </tr>
@@ -437,24 +437,24 @@ async function loadBilling() {
     const invTbody = document.getElementById('invoices-tbody');
     if (invTbody) {
       if (invoices.length === 0) {
-        invTbody.innerHTML = `<tr><td colspan="4" class="px-5 py-6 text-center text-slate-400 text-xs">No invoices generated yet.</td></tr>`;
+        invTbody.innerHTML = `<tr><td colspan="4" class="px-5 py-6 text-center text-slate-500 text-xs">No invoices generated yet.</td></tr>`;
       } else {
         invTbody.innerHTML = invoices.map(inv => {
-          let statusBadge = 'bg-slate-800 text-slate-400 border-slate-700';
-          if (inv.status === 'PAID') statusBadge = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-          else if (inv.status === 'PARTIAL') statusBadge = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-          else if (inv.status === 'UNPAID') statusBadge = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+          let statusBadge = 'bg-slate-100 text-slate-600 border-slate-200';
+          if (inv.status === 'PAID') statusBadge = 'bg-[#10A875]/15 text-[#10A875] border-[#10A875]/30';
+          else if (inv.status === 'PARTIAL') statusBadge = 'bg-[#F36C00]/15 text-[#F36C00] border-[#F36C00]/30';
+          else if (inv.status === 'UNPAID') statusBadge = 'bg-[#F21F26]/15 text-[#F21F26] border-[#F21F26]/30';
 
           return `
-            <tr class="hover:bg-white/[0.04] transition">
-              <td class="px-5 py-3.5 font-mono text-2xs text-indigo-400 font-semibold">${inv.invoice_number}</td>
+            <tr class="hover:bg-blue-50/60 transition">
+              <td class="px-5 py-3.5 font-mono text-2xs text-[#0B4F9C] font-extrabold">${inv.invoice_number}</td>
               <td class="px-5 py-3.5">
-                <span class="font-bold text-white text-xs block">Tenant #${inv.tenant_id}</span>
-                <span class="text-2xs text-slate-400">${inv.billing_month}</span>
+                <span class="font-bold text-[#062B63] text-xs block">${inv.tenant_name || ('Tenant #' + inv.tenant_id)}</span>
+                <span class="text-2xs text-slate-500">${inv.billing_month}</span>
               </td>
-              <td class="px-5 py-3.5 font-extrabold text-white text-xs">₹${inv.total_amount.toLocaleString('en-IN')}</td>
+              <td class="px-5 py-3.5 font-extrabold text-[#062B63] text-xs">₹${inv.total_amount.toLocaleString('en-IN')}</td>
               <td class="px-5 py-3.5">
-                <span class="px-2.5 py-1 rounded-full text-2xs font-bold border ${statusBadge}">${inv.status}</span>
+                <span class="px-2.5 py-1 rounded-full text-2xs font-extrabold border ${statusBadge}">${inv.status}</span>
               </td>
             </tr>
           `;
@@ -466,18 +466,18 @@ async function loadBilling() {
     const payTbody = document.getElementById('payments-tbody');
     if (payTbody) {
       if (payments.length === 0) {
-        payTbody.innerHTML = `<tr><td colspan="4" class="px-5 py-6 text-center text-slate-400 text-xs">No payment records logged yet.</td></tr>`;
+        payTbody.innerHTML = `<tr><td colspan="4" class="px-5 py-6 text-center text-slate-500 text-xs">No payment records logged yet.</td></tr>`;
       } else {
         payTbody.innerHTML = payments.map(p => `
-          <tr class="hover:bg-white/[0.04] transition">
-            <td class="px-5 py-3.5 font-mono text-2xs text-purple-400 font-semibold">${p.receipt_number}</td>
+          <tr class="hover:bg-blue-50/60 transition">
+            <td class="px-5 py-3.5 font-mono text-2xs text-[#5A18C9] font-extrabold">${p.receipt_number}</td>
             <td class="px-5 py-3.5">
-              <span class="font-bold text-white text-xs block">${p.tenant_name || ('Tenant #' + p.tenant_id)}</span>
-              <span class="text-2xs text-slate-400">${p.payment_method} &bull; ${new Date(p.payment_date).toLocaleDateString()}</span>
+              <span class="font-bold text-[#062B63] text-xs block">${p.tenant_name || ('Tenant #' + p.tenant_id)}</span>
+              <span class="text-2xs text-slate-500">${p.payment_method} &bull; ${new Date(p.payment_date).toLocaleDateString()}</span>
             </td>
-            <td class="px-5 py-3.5 font-extrabold text-emerald-400 text-xs">₹${p.amount.toLocaleString('en-IN')}</td>
+            <td class="px-5 py-3.5 font-extrabold text-[#10A875] text-xs">₹${p.amount.toLocaleString('en-IN')}</td>
             <td class="px-5 py-3.5 text-right">
-              <button onclick="showPaymentReceipt(${p.id})" class="px-3 py-1.5 rounded-xl btn-gradient text-white font-bold text-2xs inline-flex items-center gap-1.5 shadow-md">
+              <button onclick="showPaymentReceipt(${p.id})" class="px-3 py-1.5 rounded-xl bg-[#062B63] hover:bg-[#0B4F9C] text-[#FFD200] font-black text-2xs inline-flex items-center gap-1.5 shadow-sm border border-[#FFD200]/40 transition transform hover:scale-105">
                 <i data-lucide="receipt" class="w-3 h-3"></i> Receipt
               </button>
             </td>
@@ -505,41 +505,41 @@ async function loadComplaints() {
     if (!grid) return;
 
     if (tickets.length === 0) {
-      grid.innerHTML = `<div class="col-span-3 text-center py-16 text-slate-400 text-xs">No service requests recorded.</div>`;
+      grid.innerHTML = `<div class="col-span-3 text-center py-16 text-slate-500 text-xs">No service requests recorded. All facilities clear!</div>`;
       return;
     }
 
     grid.innerHTML = tickets.map(tk => {
-      let statusColor = 'bg-slate-800 text-slate-400 border-slate-700';
-      if (tk.status === 'RESOLVED' || tk.status === 'CLOSED') statusColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-      else if (tk.status === 'IN_PROGRESS') statusColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-      else if (tk.status === 'OPEN') statusColor = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+      let statusColor = 'bg-slate-100 text-slate-600 border-slate-200';
+      if (tk.status === 'RESOLVED' || tk.status === 'CLOSED') statusColor = 'bg-[#10A875]/15 text-[#10A875] border-[#10A875]/30';
+      else if (tk.status === 'IN_PROGRESS') statusColor = 'bg-[#F36C00]/15 text-[#F36C00] border-[#F36C00]/30';
+      else if (tk.status === 'OPEN') statusColor = 'bg-[#F21F26]/15 text-[#F21F26] border-[#F21F26]/30';
 
       return `
-        <div class="glass-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
+        <div class="brand-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
           <div class="flex items-start justify-between gap-3">
             <div>
               <div class="flex items-center gap-2">
-                <span class="font-mono text-2xs px-2 py-0.5 rounded-full bg-white/[0.06] text-indigo-400 border border-white/[0.08] font-bold">#${tk.ticket_number}</span>
-                <span class="px-2.5 py-0.5 rounded-full text-2xs font-bold border ${statusColor}">${tk.status}</span>
+                <span class="font-mono text-2xs px-2 py-0.5 rounded-full bg-[#EAF3FA] text-[#062B63] border border-blue-200 font-extrabold">#${tk.ticket_number}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-2xs font-extrabold border ${statusColor}">${tk.status}</span>
               </div>
-              <h4 class="font-bold text-white text-base mt-2">${tk.title}</h4>
+              <h4 class="font-extrabold text-[#062B63] text-base mt-2">${tk.title}</h4>
             </div>
-            <span class="px-2.5 py-1 rounded-full text-2xs font-extrabold border shrink-0 ${tk.priority === 'URGENT' || tk.priority === 'HIGH' ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">
+            <span class="px-2.5 py-1 rounded-full text-2xs font-extrabold border shrink-0 ${tk.priority === 'URGENT' || tk.priority === 'HIGH' ? 'bg-[#F21F26]/15 text-[#F21F26] border-[#F21F26]/30' : 'bg-[#F36C00]/15 text-[#F36C00] border-[#F36C00]/30'}">
               ${tk.priority}
             </span>
           </div>
 
-          <p class="text-xs text-slate-300 leading-relaxed">${tk.description || 'No description provided'}</p>
-          ${tk.resolution_notes ? `<p class="text-2xs text-emerald-400 italic bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/20">Resolution: ${tk.resolution_notes}</p>` : ''}
+          <p class="text-xs text-slate-600 leading-relaxed">${tk.description || 'No description provided'}</p>
+          ${tk.resolution_notes ? `<p class="text-2xs text-[#10A875] italic bg-[#10A875]/10 p-2.5 rounded-xl border border-[#10A875]/20 font-semibold">Resolution: ${tk.resolution_notes}</p>` : ''}
 
-          <div class="pt-3 border-t border-white/[0.06] flex items-center justify-between">
-            <span class="text-2xs text-slate-400 font-semibold uppercase tracking-wider">${tk.category}</span>
+          <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
+            <span class="text-2xs text-slate-500 font-bold uppercase tracking-wider">${tk.category}</span>
             ${tk.status !== 'RESOLVED' && tk.status !== 'CLOSED' ? `
-              <button onclick="resolveTicket(${tk.id})" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 text-white text-xs font-bold shadow-md transition">
+              <button onclick="resolveTicket(${tk.id})" class="px-3 py-1.5 rounded-xl bg-[#10A875] hover:bg-emerald-600 text-white text-xs font-bold shadow-sm transition">
                 Mark Resolved
               </button>
-            ` : `<span class="text-2xs text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>`}
+            ` : `<span class="text-2xs text-[#10A875] font-extrabold flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>`}
           </div>
         </div>
       `;
@@ -585,9 +585,9 @@ function switchMealDay(day) {
   // Update chip styles
   document.querySelectorAll('#meal-days-chips button').forEach(btn => {
     if (btn.getAttribute('data-day') === day) {
-      btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-indigo-500/30 text-white border border-indigo-500/50 shadow-lg shadow-indigo-500/20 shrink-0';
+      btn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-[#062B63] text-white border border-[#FFD200] shadow-md shrink-0';
     } else {
-      btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0';
+      btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold bg-white text-slate-700 hover:bg-blue-50 border border-slate-200 shrink-0';
     }
   });
 
@@ -611,54 +611,54 @@ function renderMealsForDay(day) {
 
   grid.innerHTML = `
     <!-- Breakfast -->
-    <div class="glass-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
+    <div class="brand-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-[#FFD200]/25 text-[#062B63] flex items-center justify-center font-bold">
             <i data-lucide="sunrise" class="w-5 h-5"></i>
           </div>
           <div>
-            <h4 class="font-bold text-white text-base">Breakfast</h4>
-            <span class="text-2xs text-slate-400">7:30 AM - 9:30 AM</span>
+            <h4 class="font-black text-[#062B63] text-base">Breakfast</h4>
+            <span class="text-2xs text-slate-500 font-semibold">7:30 AM - 9:30 AM</span>
           </div>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-2xs font-bold border border-amber-500/30">Morning</span>
+        <span class="px-2.5 py-0.5 rounded-full bg-[#FFD200]/30 text-[#062B63] text-2xs font-extrabold border border-[#FFD200]">Morning</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed font-medium bg-white/[0.03] p-4 rounded-xl border border-white/[0.06]">${breakfastText}</p>
+      <p class="text-xs text-slate-800 leading-relaxed font-semibold bg-[#EAF3FA] p-4 rounded-xl border border-blue-200">${breakfastText}</p>
     </div>
 
     <!-- Lunch -->
-    <div class="glass-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
+    <div class="brand-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-[#5A18C9]/15 text-[#5A18C9] flex items-center justify-center font-bold">
             <i data-lucide="sun" class="w-5 h-5"></i>
           </div>
           <div>
-            <h4 class="font-bold text-white text-base">Lunch</h4>
-            <span class="text-2xs text-slate-400">12:30 PM - 2:30 PM</span>
+            <h4 class="font-black text-[#062B63] text-base">Lunch</h4>
+            <span class="text-2xs text-slate-500 font-semibold">12:30 PM - 2:30 PM</span>
           </div>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-2xs font-bold border border-purple-500/30">Afternoon</span>
+        <span class="px-2.5 py-0.5 rounded-full bg-[#5A18C9]/15 text-[#5A18C9] text-2xs font-extrabold border border-[#5A18C9]/30">Afternoon</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed font-medium bg-white/[0.03] p-4 rounded-xl border border-white/[0.06]">${lunchText}</p>
+      <p class="text-xs text-slate-800 leading-relaxed font-semibold bg-[#EAF3FA] p-4 rounded-xl border border-blue-200">${lunchText}</p>
     </div>
 
     <!-- Dinner -->
-    <div class="glass-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
+    <div class="brand-card rounded-2xl p-6 space-y-4 hover:-translate-y-1 transition-all duration-300">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-[#062B63]/15 text-[#062B63] flex items-center justify-center font-bold">
             <i data-lucide="moon" class="w-5 h-5"></i>
           </div>
           <div>
-            <h4 class="font-bold text-white text-base">Dinner</h4>
-            <span class="text-2xs text-slate-400">7:30 PM - 9:45 PM</span>
+            <h4 class="font-black text-[#062B63] text-base">Dinner</h4>
+            <span class="text-2xs text-slate-500 font-semibold">7:30 PM - 9:45 PM</span>
           </div>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-2xs font-bold border border-indigo-500/30">Night</span>
+        <span class="px-2.5 py-0.5 rounded-full bg-[#062B63]/15 text-[#062B63] text-2xs font-extrabold border border-[#062B63]/30">Night</span>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed font-medium bg-white/[0.03] p-4 rounded-xl border border-white/[0.06]">${dinnerText}</p>
+      <p class="text-xs text-slate-800 leading-relaxed font-semibold bg-[#EAF3FA] p-4 rounded-xl border border-blue-200">${dinnerText}</p>
     </div>
   `;
 
