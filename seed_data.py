@@ -7,13 +7,23 @@ from app.models.billing import Invoice, Payment
 from app.models.maintenance import MaintenanceTicket
 from app.models.meal import MealMenu, MealAttendance
 
-def seed_database():
+def seed_database(force: bool = False):
     print("Initializing database tables...")
-    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
     db = SessionLocal()
     try:
+        if not force:
+            existing_room = db.query(Room).first()
+            if existing_room:
+                print("Database already contains records. Skipping seed.")
+                return
+
+        if force:
+            print("Force flag set: Recreating tables...")
+            Base.metadata.drop_all(bind=engine)
+            Base.metadata.create_all(bind=engine)
+
         print("Seeding Latha PG Rooms and Beds...")
         # Rooms according to banner: 2, 3, 4 Sharing with Attached Bathrooms
         amenities_str = "Attached Bathroom, High-Speed Wi-Fi, 24/7 CCTV, Washing Machine, Power Backup"
