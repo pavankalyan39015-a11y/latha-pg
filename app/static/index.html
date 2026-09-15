@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PG Manager Pro - Paying Guest Accommodation Dashboard</title>
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Latha PG Manager - Smart Co-Living System</title>
+  <meta name="theme-color" content="#070913" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Latha PG" />
@@ -16,14 +16,197 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    [data-tab-btn].active {
-      background-color: #3b82f6;
-      color: #ffffff;
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    
+    :root {
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+      --glass-bg: rgba(15, 23, 42, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-border-hover: rgba(129, 140, 248, 0.35);
     }
+
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #070913;
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background glow spheres */
+    .ambient-glow-1 {
+      position: fixed;
+      top: -100px;
+      left: -80px;
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatSlow 12s ease-in-out infinite alternate;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      top: 35%;
+      right: -100px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+      animation: floatSlow 16s ease-in-out infinite alternate-reverse;
+    }
+
+    .ambient-glow-3 {
+      position: fixed;
+      bottom: -100px;
+      left: 30%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.09) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes floatSlow {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 40px) scale(1.08); }
+    }
+
+    /* Glassmorphic card styling */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .glass-card:hover {
+      border-color: var(--glass-border-hover);
+      box-shadow: 0 16px 36px -10px rgba(99, 102, 241, 0.16);
+      transform: translateY(-2px);
+    }
+
+    .glass-panel {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--glass-border);
+    }
+
+    /* Smooth page & tab transitions */
+    .tab-content {
+      display: none;
+      opacity: 0;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes modalPop {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-animate {
+      animation: modalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Gradient typography */
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-gradient-tech {
+      background: linear-gradient(135deg, #a5b4fc 0%, #c084fc 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Gradient buttons */
+    .btn-gradient {
+      background: var(--primary-gradient);
+      box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-gradient:hover {
+      box-shadow: 0 8px 25px -2px rgba(139, 92, 246, 0.55);
+      transform: translateY(-1px) scale(1.01);
+    }
+
+    .btn-gradient:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    /* Navigation tabs active state */
+    [data-tab-btn].active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.2) 100%);
+      color: #ffffff;
+      border: 1px solid rgba(129, 140, 248, 0.35);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+    }
+
+    /* Mobile bottom navigation capsule */
+    .mobile-nav-capsule {
+      background: rgba(10, 15, 29, 0.88);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 35px -5px rgba(0, 0, 0, 0.65), 0 0 20px rgba(99, 102, 241, 0.15);
+    }
+
+    .mobile-tab-btn.active {
+      color: #a5b4fc;
+      transform: translateY(-2px);
+    }
+
+    .mobile-tab-btn.active i {
+      filter: drop-shadow(0 0 8px rgba(129, 140, 248, 0.7));
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(129, 140, 248, 0.6);
+    }
+
     @media print {
       body * { visibility: hidden; }
       #printable-receipt-card, #printable-receipt-card * { visibility: visible; }
@@ -36,537 +219,578 @@
         padding: 20px !important;
         border: 2px solid #0f172a !important;
         box-shadow: none !important;
+        background: white !important;
+        color: black !important;
       }
       .no-print { display: none !important; }
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col relative selection:bg-indigo-500 selection:text-white">
 
-  <!-- Main Container with Sidebar & Content -->
-  <div class="flex-1 flex overflow-hidden">
+  <!-- Ambient Glow Background Blobs -->
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+  <div class="ambient-glow-3"></div>
+
+  <!-- Main Viewport Layout -->
+  <div class="flex-1 flex overflow-hidden relative z-10">
     
-    <!-- Mobile Backdrop Overlay -->
-    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-slate-950/60 z-30 hidden md:hidden transition-opacity"></div>
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 hidden md:hidden transition-opacity"></div>
 
-    <!-- Sidebar -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shadow-2xl transition-transform duration-300 -translate-x-full md:translate-x-0 md:static md:shadow-xl md:shrink-0">
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 glass-panel flex flex-col justify-between shadow-2xl transition-transform duration-300 -translate-x-full md:translate-x-0 md:static md:shrink-0 border-r border-white/[0.08]">
       <div>
-        <!-- Brand Header -->
-        <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800">
-          <div class="flex items-center gap-3">
-            <div class="h-10 w-10 bg-amber-500 rounded-xl flex items-center justify-center text-slate-950 shadow-md">
+        <!-- Brand Header with Glowing Icon -->
+        <div class="h-20 flex items-center justify-between px-6 border-b border-white/[0.06]">
+          <div class="flex items-center gap-3.5">
+            <div class="h-11 w-11 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
               <i data-lucide="building-2" class="w-6 h-6"></i>
             </div>
             <div>
-              <h1 class="font-bold text-white text-sm sm:text-base leading-tight">Latha PG for Gents</h1>
-              <p class="text-xs text-amber-400 font-medium">ಲತಾ ಪಿಜಿ &bull; 2, 3, 4 Sharing</p>
+              <h1 class="font-extrabold text-white text-base leading-tight tracking-wide">Latha PG</h1>
+              <p class="text-xs text-gradient-tech font-semibold">ಲತಾ ಪಿಜಿ &bull; Smart Living</p>
             </div>
           </div>
           <!-- Close button on mobile -->
-          <button onclick="toggleSidebar(false)" class="p-1.5 text-slate-400 hover:text-white rounded-lg md:hidden">
+          <button onclick="toggleSidebar(false)" class="p-2 text-slate-400 hover:text-white rounded-lg md:hidden transition">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
 
         <!-- Navigation Links -->
         <nav class="p-4 space-y-1.5 text-sm font-medium">
-          <button data-tab-btn="overview" onclick="switchTab('overview')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left active">
-            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <button data-tab-btn="overview" onclick="switchTab('overview')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left active">
+            <i data-lucide="layout-dashboard" class="w-4 h-4 text-indigo-400"></i>
             <span>Overview</span>
           </button>
-          <button data-tab-btn="rooms" onclick="switchTab('rooms')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
-            <i data-lucide="bed-double" class="w-4 h-4"></i>
+          <button data-tab-btn="rooms" onclick="switchTab('rooms')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-white/[0.06] text-slate-300 hover:text-white">
+            <i data-lucide="bed-double" class="w-4 h-4 text-purple-400"></i>
             <span>Rooms & Beds</span>
           </button>
-          <button data-tab-btn="tenants" onclick="switchTab('tenants')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
-            <i data-lucide="users" class="w-4 h-4"></i>
+          <button data-tab-btn="tenants" onclick="switchTab('tenants')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-white/[0.06] text-slate-300 hover:text-white">
+            <i data-lucide="users" class="w-4 h-4 text-pink-400"></i>
             <span>Tenants & KYC</span>
           </button>
-          <button data-tab-btn="billing" onclick="switchTab('billing')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
-            <i data-lucide="receipt" class="w-4 h-4"></i>
+          <button data-tab-btn="billing" onclick="switchTab('billing')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-white/[0.06] text-slate-300 hover:text-white">
+            <i data-lucide="receipt" class="w-4 h-4 text-emerald-400"></i>
             <span>Billing & Dues</span>
           </button>
-          <button data-tab-btn="complaints" onclick="switchTab('complaints')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
-            <i data-lucide="wrench" class="w-4 h-4"></i>
+          <button data-tab-btn="complaints" onclick="switchTab('complaints')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-white/[0.06] text-slate-300 hover:text-white">
+            <i data-lucide="wrench" class="w-4 h-4 text-amber-400"></i>
             <span>Maintenance</span>
           </button>
-          <button data-tab-btn="meals" onclick="switchTab('meals')" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition text-left hover:bg-slate-800 text-slate-300">
-            <i data-lucide="utensils" class="w-4 h-4"></i>
+          <button data-tab-btn="meals" onclick="switchTab('meals')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-200 text-left hover:bg-white/[0.06] text-slate-300 hover:text-white">
+            <i data-lucide="utensils" class="w-4 h-4 text-sky-400"></i>
             <span>Mess & Meals</span>
           </button>
         </nav>
       </div>
 
-      <!-- Bottom Status & Docs Link -->
-      <div class="p-4 border-t border-slate-800 space-y-2.5">
-        <div class="bg-slate-800/90 rounded-xl p-3 border border-slate-700/60 shadow-sm">
-          <p class="text-2xs uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1.5">
-            <i data-lucide="phone" class="w-3 h-3"></i> PG Helpline
-          </p>
-          <div class="mt-1.5 space-y-1 text-xs">
-            <a href="tel:9353439703" class="flex items-center justify-between text-slate-200 hover:text-amber-300 font-medium">
+      <!-- Bottom Helpline & System Status -->
+      <div class="p-4 border-t border-white/[0.06] space-y-3">
+        <!-- Direct PG Helpline Widget -->
+        <div class="bg-white/[0.04] rounded-xl p-3.5 border border-white/[0.06] shadow-sm">
+          <div class="flex items-center justify-between text-2xs uppercase tracking-wider text-amber-400 font-bold">
+            <span class="flex items-center gap-1.5">
+              <i data-lucide="phone" class="w-3.5 h-3.5"></i> Direct Helpline
+            </span>
+            <span class="flex h-2 w-2 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+          </div>
+          <div class="mt-2 space-y-1.5 text-xs">
+            <a href="tel:9353439703" class="flex items-center justify-between text-slate-200 hover:text-indigo-300 font-semibold transition">
               <span>9353439703</span>
-              <span class="text-2xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">Call</span>
+              <span class="text-2xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Call</span>
             </a>
-            <a href="tel:9019870803" class="flex items-center justify-between text-slate-200 hover:text-amber-300 font-medium">
+            <a href="tel:9019870803" class="flex items-center justify-between text-slate-200 hover:text-indigo-300 font-semibold transition">
               <span>9019870803</span>
-              <span class="text-2xs px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">Call</span>
+              <span class="text-2xs px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Call</span>
             </a>
           </div>
         </div>
 
-        <a href="/docs" target="_blank" class="flex items-center justify-between px-3 py-2 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition">
+        <a href="/docs" target="_blank" class="flex items-center justify-between px-3.5 py-2 text-xs bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white rounded-xl border border-white/[0.06] transition">
           <span class="flex items-center gap-2">
-            <i data-lucide="terminal" class="w-3.5 h-3.5 text-blue-400"></i>
+            <i data-lucide="terminal" class="w-3.5 h-3.5 text-indigo-400"></i>
             Swagger API Docs
           </span>
-          <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          <i data-lucide="external-link" class="w-3.5 h-3.5 text-slate-500"></i>
         </a>
         <div class="flex items-center gap-2 px-1 text-xs text-slate-400">
-          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-          <span>System: Online (SQLite/PG)</span>
+          <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></div>
+          <span>Cloud Server: Online (24/7)</span>
         </div>
       </div>
     </aside>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Flow Area -->
     <div class="flex-1 flex flex-col overflow-y-auto">
       
-      <!-- Top Bar -->
-      <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-10">
+      <!-- Tech Frosted Glass Header -->
+      <header class="h-16 md:h-20 glass-panel border-b border-white/[0.06] px-4 sm:px-6 md:px-8 flex items-center justify-between sticky top-0 z-20">
         <div class="flex items-center gap-3">
-          <button onclick="toggleSidebar(true)" class="p-2 -ml-1 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg md:hidden" aria-label="Open menu">
+          <button onclick="toggleSidebar(true)" class="p-2 -ml-1 text-slate-400 hover:text-white hover:bg-white/[0.08] rounded-xl md:hidden transition" aria-label="Open menu">
             <i data-lucide="menu" class="w-5 h-5"></i>
           </button>
           <div>
-            <h2 id="page-title" class="text-base sm:text-lg font-semibold text-slate-800 truncate max-w-[170px] sm:max-w-xs md:max-w-none">Executive Overview</h2>
-            <p id="page-subtitle" class="text-2xs sm:text-xs text-slate-500 hidden sm:block">Live occupancy, revenue, and PG operations</p>
+            <h2 id="page-title" class="text-base sm:text-xl font-bold text-white tracking-wide truncate max-w-[170px] sm:max-w-xs md:max-w-none">Executive Overview</h2>
+            <p id="page-subtitle" class="text-2xs sm:text-xs text-slate-400 hidden sm:block">Live occupancy, revenue, and PG operations</p>
           </div>
         </div>
 
         <!-- Quick Actions & Install Button -->
         <div class="flex items-center gap-2 sm:gap-3">
-          <!-- PWA Install Button (shown when installable) -->
-          <button id="pwa-install-btn" style="display: none;" onclick="triggerPwaInstall()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg shadow-sm transition animate-pulse">
+          <!-- PWA Install Button (shows when installable on phone) -->
+          <button id="pwa-install-btn" style="display: none;" onclick="triggerPwaInstall()" class="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 text-xs font-extrabold rounded-xl shadow-lg shadow-amber-500/25 transition-all duration-200 transform hover:scale-105 active:scale-95">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
             <span>Install App</span>
           </button>
 
-          <button onclick="openModal('modal-onboard')" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg shadow-sm transition">
+          <button onclick="openModal('modal-onboard')" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 btn-gradient text-white text-xs font-semibold rounded-xl transition">
             <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
             <span class="hidden sm:inline">Onboard</span>
           </button>
-          <button onclick="openModal('modal-room')" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg shadow-sm transition hidden sm:inline-flex">
-            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+          <button onclick="openModal('modal-room')" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/[0.06] hover:bg-white/[0.12] text-white border border-white/[0.1] text-xs font-semibold rounded-xl shadow-sm transition hidden sm:inline-flex">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-indigo-400"></i>
             <span>Add Room</span>
           </button>
-          <button onclick="openModal('modal-payment')" class="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-3.5 sm:py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg shadow-sm transition">
+          <button onclick="openModal('modal-payment')" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-500/20 transition">
             <i data-lucide="banknote" class="w-3.5 h-3.5"></i>
             <span class="hidden sm:inline">Payment</span>
           </button>
         </div>
       </header>
 
-      <!-- Tab Content Area -->
-      <main class="p-4 sm:p-6 md:p-8 pb-24 md:pb-8 flex-1 max-w-7xl w-full mx-auto">
+      <!-- Dynamic Tab Content Wrapper -->
+      <main class="p-4 sm:p-6 md:p-8 pb-28 md:pb-10 flex-1 max-w-7xl w-full mx-auto space-y-8">
 
         <!-- ==================== TAB 1: OVERVIEW ==================== -->
         <section id="tab-overview" class="tab-content active space-y-6">
-          <!-- Latha PG Official Banner & Amenities Strip -->
-          <div class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-slate-800 overflow-hidden relative">
+          
+          <!-- Modern Tech Hero Banner -->
+          <div class="glass-card rounded-2xl sm:rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden border border-indigo-500/20 bg-gradient-to-br from-indigo-950/80 via-slate-900/90 to-purple-950/80">
+            <!-- Background Glow inside Banner -->
+            <div class="absolute -right-16 -top-16 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-16 -bottom-16 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
             <div class="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
-              
-              <!-- Left: Branding & Banner image thumbnail -->
-              <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
-                <div class="w-full sm:w-56 h-32 rounded-xl overflow-hidden border-2 border-amber-400 shadow-md shrink-0 bg-slate-950 flex items-center justify-center">
-                  <img src="/dashboard/banner.jpg" alt="Latha PG Banner" class="w-full h-full object-cover hover:scale-105 transition duration-300" />
+              <!-- Left: Branding & Banner Thumbnail -->
+              <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+                <div class="w-full sm:w-56 h-32 rounded-2xl overflow-hidden border-2 border-indigo-500/50 shadow-xl shadow-indigo-900/40 shrink-0 bg-slate-950 flex items-center justify-center group">
+                  <img src="/dashboard/banner.jpg" alt="Latha PG Banner" class="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                 </div>
                 <div>
-                  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-semibold mb-2">
-                    <span>ಲತಾ ಪಿಜಿ - ಪುರುಷರಿಗೆ</span> &bull; <span>Your Home Away From Home</span>
+                  <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold mb-2.5 border border-indigo-500/30">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                    <span>ಲತಾ ಪಿಜಿ - ಪುರುಷರಿಗೆ</span> &bull; <span>Safe Stay, Better Study</span>
                   </div>
-                  <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Latha PG for Gents</h2>
-                  <p class="text-xs text-slate-300 mt-1 max-w-lg">
-                    Comfortable, Safe & Affordable <strong>2, 3, 4 Sharing</strong> with <strong>Attached Bathrooms</strong>. Safe Stay, Better Study.
+                  <h2 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-white text-gradient">Latha PG for Gents</h2>
+                  <p class="text-xs sm:text-sm text-slate-300 mt-2 max-w-xl leading-relaxed">
+                    Premium <strong class="text-indigo-300 font-semibold">2, 3 &amp; 4 Sharing</strong> accommodation with <strong class="text-pink-300 font-semibold">Attached Bathrooms</strong> in every room. 24/7 CCTV, High-Speed Wi-Fi, and Washing Machine.
                   </p>
                 </div>
               </div>
 
-              <!-- Right: Contact Buttons -->
+              <!-- Right: Direct Helpline Call Buttons -->
               <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
-                <a href="tel:9353439703" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition">
+                <a href="tel:9353439703" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl btn-gradient text-white font-bold text-xs shadow-xl transition transform hover:scale-105">
                   <i data-lucide="phone-call" class="w-4 h-4"></i>
                   Call 9353439703
                 </a>
-                <a href="tel:9019870803" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-xs border border-white/20 transition">
-                  <i data-lucide="phone" class="w-4 h-4"></i>
+                <a href="tel:9019870803" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-white font-semibold text-xs border border-white/20 backdrop-blur-md transition transform hover:scale-105">
+                  <i data-lucide="phone" class="w-4 h-4 text-purple-400"></i>
                   Call 9019870803
                 </a>
               </div>
             </div>
 
-            <!-- Amenities Pill Strip from Banner -->
-            <div class="mt-6 pt-5 border-t border-slate-800/80 grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
-              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
-                <div class="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+            <!-- Amenities Glass Strip -->
+            <div class="mt-8 pt-6 border-t border-white/[0.08] grid grid-cols-2 sm:grid-cols-5 gap-3 text-xs">
+              <div class="flex items-center gap-3 bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2.5 rounded-xl border border-white/[0.06] transition">
+                <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
                   <i data-lucide="wifi" class="w-4 h-4"></i>
                 </div>
                 <div>
-                  <span class="font-semibold block text-slate-200">Wi-Fi</span>
+                  <span class="font-bold block text-slate-100">Wi-Fi</span>
                   <span class="text-2xs text-slate-400">High-Speed</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
-                <div class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <div class="flex items-center gap-3 bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2.5 rounded-xl border border-white/[0.06] transition">
+                <div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
                   <i data-lucide="video" class="w-4 h-4"></i>
                 </div>
                 <div>
-                  <span class="font-semibold block text-slate-200">CCTV</span>
+                  <span class="font-bold block text-slate-100">CCTV</span>
                   <span class="text-2xs text-slate-400">24/7 Security</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
-                <div class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+              <div class="flex items-center gap-3 bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2.5 rounded-xl border border-white/[0.06] transition">
+                <div class="w-8 h-8 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
                   <i data-lucide="shirt" class="w-4 h-4"></i>
                 </div>
                 <div>
-                  <span class="font-semibold block text-slate-200">Washing Machine</span>
-                  <span class="text-2xs text-slate-400">Laundry Access</span>
+                  <span class="font-bold block text-slate-100">Washing</span>
+                  <span class="text-2xs text-slate-400">Free Laundry</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50">
-                <div class="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+              <div class="flex items-center gap-3 bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2.5 rounded-xl border border-white/[0.06] transition">
+                <div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
                   <i data-lucide="zap" class="w-4 h-4"></i>
                 </div>
                 <div>
-                  <span class="font-semibold block text-slate-200">Power Backup</span>
+                  <span class="font-bold block text-slate-100">Power Backup</span>
                   <span class="text-2xs text-slate-400">Inverter On</span>
                 </div>
               </div>
-              <div class="flex items-center gap-2.5 bg-slate-800/60 px-3 py-2 rounded-lg border border-slate-700/50 col-span-2 sm:col-span-1">
-                <div class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+              <div class="flex items-center gap-3 bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2.5 rounded-xl border border-white/[0.06] col-span-2 sm:col-span-1 transition">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
                   <i data-lucide="bath" class="w-4 h-4"></i>
                 </div>
                 <div>
-                  <span class="font-semibold block text-slate-200">Attached Bath</span>
-                  <span class="text-2xs text-slate-400">In Every Room</span>
+                  <span class="font-bold block text-slate-100">Attached Bath</span>
+                  <span class="text-2xs text-slate-400">Every Room</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Metric KPI Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Glass Metric KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <!-- Occupancy Card -->
-            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
-              <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Occupancy Rate</p>
-                <div class="flex items-baseline gap-2 mt-1">
-                  <h3 id="stat-occupancy-rate" class="text-2xl font-bold text-slate-900">0%</h3>
-                  <span id="stat-occupied-beds" class="text-xs text-slate-500">0/0 beds</span>
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-2xs uppercase tracking-wider font-bold text-indigo-400">Occupancy Rate</p>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <h3 id="stat-occupancy-rate" class="text-3xl font-extrabold text-white">0%</h3>
+                    <span id="stat-occupied-beds" class="text-xs text-slate-400 font-medium">0/0 beds</span>
+                  </div>
                 </div>
-                <div class="w-full bg-slate-100 rounded-full h-1.5 mt-3 overflow-hidden">
-                  <div id="stat-occupancy-bar" class="bg-blue-600 h-1.5 rounded-full" style="width: 0%"></div>
+                <div class="h-12 w-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center shadow-lg shadow-indigo-500/10 group-hover:scale-110 transition duration-300">
+                  <i data-lucide="bed" class="w-6 h-6"></i>
                 </div>
               </div>
-              <div class="h-12 w-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
-                <i data-lucide="bed" class="w-6 h-6"></i>
+              <div class="w-full bg-slate-800/80 rounded-full h-2 mt-4 overflow-hidden p-0.5">
+                <div id="stat-occupancy-bar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-1 rounded-full transition-all duration-700" style="width: 0%"></div>
               </div>
             </div>
 
             <!-- Vacant Beds -->
-            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
-              <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Vacant Beds</p>
-                <div class="flex items-baseline gap-2 mt-1">
-                  <h3 id="stat-available-beds" class="text-2xl font-bold text-emerald-600">0</h3>
-                  <span class="text-xs text-slate-500">Ready for check-in</span>
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-2xs uppercase tracking-wider font-bold text-emerald-400">Vacant Beds</p>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <h3 id="stat-available-beds" class="text-3xl font-extrabold text-emerald-400">0</h3>
+                    <span class="text-xs text-slate-400 font-medium">Ready</span>
+                  </div>
                 </div>
-                <p class="text-xs text-slate-400 mt-2">Across all room sharing types</p>
+                <div class="h-12 w-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/10 group-hover:scale-110 transition duration-300">
+                  <i data-lucide="door-open" class="w-6 h-6"></i>
+                </div>
               </div>
-              <div class="h-12 w-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
-                <i data-lucide="door-open" class="w-6 h-6"></i>
-              </div>
+              <p class="text-xs text-slate-400 mt-4 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 2, 3, &amp; 4 Sharing Available
+              </p>
             </div>
 
             <!-- Collections Card -->
-            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
-              <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Revenue Collected</p>
-                <div class="flex items-baseline gap-2 mt-1">
-                  <h3 id="stat-collected" class="text-2xl font-bold text-slate-900">₹0</h3>
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-2xs uppercase tracking-wider font-bold text-purple-400">Collected</p>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <h3 id="stat-collected" class="text-3xl font-extrabold text-white">₹0</h3>
+                  </div>
                 </div>
-                <p id="stat-billed" class="text-xs text-slate-500 mt-2">Total Billed: ₹0</p>
+                <div class="h-12 w-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shadow-lg shadow-purple-500/10 group-hover:scale-110 transition duration-300">
+                  <i data-lucide="wallet" class="w-6 h-6"></i>
+                </div>
               </div>
-              <div class="h-12 w-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
-                <i data-lucide="wallet" class="w-6 h-6"></i>
-              </div>
+              <p id="stat-billed" class="text-xs text-slate-400 mt-4 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span> Total Billed: ₹0
+              </p>
             </div>
 
             <!-- Pending Dues Card -->
-            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm flex items-center justify-between">
-              <div>
-                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Pending Dues</p>
-                <div class="flex items-baseline gap-2 mt-1">
-                  <h3 id="stat-dues" class="text-2xl font-bold text-rose-600">₹0</h3>
+            <div class="glass-card rounded-2xl p-6 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-2xs uppercase tracking-wider font-bold text-rose-400">Pending Dues</p>
+                  <div class="flex items-baseline gap-2 mt-2">
+                    <h3 id="stat-dues" class="text-3xl font-extrabold text-rose-400">₹0</h3>
+                  </div>
                 </div>
-                <p id="stat-unpaid-invoices" class="text-xs text-slate-500 mt-2">Outstanding tenant balance</p>
+                <div class="h-12 w-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center shadow-lg shadow-rose-500/10 group-hover:scale-110 transition duration-300">
+                  <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                </div>
               </div>
-              <div class="h-12 w-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
-                <i data-lucide="alert-circle" class="w-6 h-6"></i>
-              </div>
+              <p id="stat-unpaid-invoices" class="text-xs text-slate-400 mt-4 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span> Outstanding balance
+              </p>
             </div>
           </div>
 
-          <!-- Secondary Grid: Recent Activity & Complaints -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Secondary Grid: Active Guests & Maintenance -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Active Tenants Quick List -->
-            <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-              <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+            <div class="lg:col-span-2 glass-card rounded-2xl overflow-hidden">
+              <div class="px-6 py-5 border-b border-white/[0.06] flex items-center justify-between">
                 <div>
-                  <h4 class="font-semibold text-slate-800 text-sm">Checked-in Tenants</h4>
-                  <p class="text-xs text-slate-500">Currently staying in the PG</p>
+                  <h4 class="font-bold text-white text-sm">Checked-in Tenants</h4>
+                  <p class="text-xs text-slate-400">Currently residing in Latha PG</p>
                 </div>
-                <button onclick="switchTab('tenants')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">View All &rarr;</button>
+                <button onclick="switchTab('tenants')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 transition">
+                  <span>View All</span>
+                  <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                </button>
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
-                  <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                  <thead class="bg-white/[0.03] text-slate-400 uppercase border-b border-white/[0.06] font-semibold text-2xs">
                     <tr>
-                      <th class="px-6 py-3">Tenant</th>
-                      <th class="px-6 py-3">Bed</th>
-                      <th class="px-6 py-3">Phone</th>
-                      <th class="px-6 py-3">KYC Status</th>
+                      <th class="px-6 py-3.5">Tenant</th>
+                      <th class="px-6 py-3.5">Bed</th>
+                      <th class="px-6 py-3.5">Phone</th>
+                      <th class="px-6 py-3.5">KYC Status</th>
                     </tr>
                   </thead>
-                  <tbody id="overview-tenants-tbody" class="divide-y divide-slate-200 text-slate-700">
-                    <!-- Loaded dynamically -->
+                  <tbody id="overview-tenants-tbody" class="divide-y divide-white/[0.04] text-slate-200">
+                    <!-- Dynamic -->
                   </tbody>
                 </table>
               </div>
             </div>
 
-            <!-- Urgent Maintenance / Action Items -->
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                <h4 class="font-semibold text-slate-800 text-sm flex items-center gap-2">
-                  <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-500"></i>
-                  Maintenance Alerts
-                </h4>
-                <button onclick="switchTab('complaints')" class="text-xs text-blue-600 hover:text-blue-700 font-medium">Manage &rarr;</button>
+            <!-- Maintenance & Operations Action Center -->
+            <div class="glass-card rounded-2xl p-6 space-y-5">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-white text-sm">Maintenance &amp; Service</h4>
+                <span id="overview-tickets-count" class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-2xs font-bold border border-amber-500/30">0 Open</span>
               </div>
               <div id="overview-tickets-list" class="space-y-3">
-                <!-- Loaded dynamically -->
+                <!-- Dynamic -->
               </div>
+              <button onclick="openModal('modal-ticket')" class="w-full py-2.5 px-4 rounded-xl bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/[0.1] text-xs font-semibold flex items-center justify-center gap-2 transition">
+                <i data-lucide="plus" class="w-4 h-4 text-indigo-400"></i>
+                Report New Issue
+              </button>
             </div>
           </div>
         </section>
-
 
         <!-- ==================== TAB 2: ROOMS & BEDS ==================== -->
         <section id="tab-rooms" class="tab-content space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
-            <div class="flex items-center gap-4">
-              <span class="text-xs font-semibold text-slate-500 uppercase">Filters:</span>
-              <select id="filter-room-ac" onchange="loadRooms()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">All Cooling (AC & Non-AC)</option>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-white">Room Allocations</h3>
+              <p class="text-xs text-slate-400">2, 3, and 4-sharing rooms with attached bathrooms</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+              <select id="filter-room-ac" onchange="loadRooms()" class="bg-slate-900/80 border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                <option value="">All Rooms (AC / Non-AC)</option>
                 <option value="true">AC Only</option>
                 <option value="false">Non-AC Only</option>
               </select>
-              <select id="filter-room-floor" onchange="loadRooms()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500">
+              <select id="filter-room-floor" onchange="loadRooms()" class="bg-slate-900/80 border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
                 <option value="">All Floors</option>
-                <option value="1">1st Floor</option>
-                <option value="2">2nd Floor</option>
+                <option value="1">Floor 1</option>
+                <option value="2">Floor 2</option>
+                <option value="3">Floor 3</option>
               </select>
-            </div>
-            <div class="flex items-center gap-3 text-xs text-slate-600">
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Available</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span> Occupied</span>
-              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Maintenance</span>
+              <button onclick="openModal('modal-room')" class="btn-gradient text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 ml-auto sm:ml-0">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                Add Room
+              </button>
             </div>
           </div>
 
-          <!-- Rooms Grid -->
           <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Room cards rendered dynamically -->
+            <!-- Dynamic Room Cards -->
           </div>
         </section>
-
 
         <!-- ==================== TAB 3: TENANTS & KYC ==================== -->
         <section id="tab-tenants" class="tab-content space-y-6">
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200">
-            <div class="relative w-full sm:w-80">
-              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
-              <input id="search-tenant" oninput="loadTenants()" type="text" placeholder="Search by name or phone..." class="w-full pl-9 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-white">Tenant Registry</h3>
+              <p class="text-xs text-slate-400">Guest records, KYC verifications, and room assignments</p>
             </div>
             <div class="flex items-center gap-3 w-full sm:w-auto">
-              <select id="filter-tenant-kyc" onchange="loadTenants()" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">All KYC Statuses</option>
-                <option value="VERIFIED">Verified Only</option>
-                <option value="PENDING">Pending Verification</option>
-              </select>
-              <button onclick="openModal('modal-onboard')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg shrink-0 flex items-center gap-2">
-                <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Onboard
+              <div class="relative flex-1 sm:w-64">
+                <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="tenant-search" placeholder="Search by name, phone, bed..." oninput="filterTenants()" class="w-full bg-slate-900/80 border border-white/[0.1] rounded-xl pl-10 pr-4 py-2 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 transition" />
+              </div>
+              <button onclick="openModal('modal-onboard')" class="btn-gradient text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shrink-0">
+                <i data-lucide="user-plus" class="w-4 h-4"></i>
+                Onboard Tenant
               </button>
             </div>
           </div>
 
-          <!-- Tenants Table -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="glass-card rounded-2xl overflow-hidden">
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
+                <thead class="bg-white/[0.03] text-slate-400 uppercase border-b border-white/[0.06] font-semibold text-2xs">
                   <tr>
-                    <th class="px-6 py-3.5">Tenant Details</th>
-                    <th class="px-6 py-3.5">Room & Bed</th>
-                    <th class="px-6 py-3.5">Occupation</th>
-                    <th class="px-6 py-3.5">KYC Status</th>
-                    <th class="px-6 py-3.5">Deposit</th>
-                    <th class="px-6 py-3.5">Check-In</th>
-                    <th class="px-6 py-3.5 text-right">Actions</th>
+                    <th class="px-6 py-4">Guest</th>
+                    <th class="px-6 py-4">Allocated Bed</th>
+                    <th class="px-6 py-4">Check-in Date</th>
+                    <th class="px-6 py-4">Deposit</th>
+                    <th class="px-6 py-4">KYC Status</th>
+                    <th class="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody id="tenants-tbody" class="divide-y divide-slate-200 text-slate-700">
-                  <!-- Loaded dynamically -->
+                <tbody id="tenants-tbody" class="divide-y divide-white/[0.04] text-slate-300">
+                  <!-- Dynamic -->
                 </tbody>
               </table>
             </div>
           </div>
         </section>
-
 
         <!-- ==================== TAB 4: BILLING & DUES ==================== -->
         <section id="tab-billing" class="tab-content space-y-6">
-          <div class="flex items-center justify-between">
-            <h3 class="text-base font-semibold text-slate-800">Rent Invoices & Payment Receipts</h3>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-bold text-white">Billing &amp; Collections</h3>
+              <p class="text-xs text-slate-400">Monthly rent invoices, payment receipts, and balance dues</p>
+            </div>
             <div class="flex items-center gap-3">
-              <button onclick="openModal('modal-invoice')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded-lg flex items-center gap-2">
-                <i data-lucide="file-plus" class="w-3.5 h-3.5"></i> Generate Invoice
+              <button onclick="openModal('modal-invoice')" class="bg-white/[0.06] hover:bg-white/[0.12] text-white border border-white/[0.1] px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="file-plus" class="w-4 h-4 text-indigo-400"></i>
+                Generate Invoice
               </button>
-              <button onclick="openModal('modal-payment')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-medium rounded-lg flex items-center gap-2">
-                <i data-lucide="banknote" class="w-3.5 h-3.5"></i> Record Payment
+              <button onclick="openModal('modal-payment')" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition">
+                <i data-lucide="banknote" class="w-4 h-4"></i>
+                Record Payment
               </button>
             </div>
           </div>
 
-          <!-- Invoices Table -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-200">
-              <h4 class="font-semibold text-slate-800 text-xs uppercase tracking-wider">Invoices & Balances</h4>
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Invoices Table -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                <h4 class="font-bold text-white text-sm">Recent Invoices</h4>
+                <span class="text-2xs text-slate-400">Monthly Rent &amp; Amenities</span>
+              </div>
+              <div class="overflow-x-auto max-h-96">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-white/[0.03] text-slate-400 uppercase border-b border-white/[0.06] text-2xs sticky top-0 backdrop-blur-md">
+                    <tr>
+                      <th class="px-5 py-3">Invoice #</th>
+                      <th class="px-5 py-3">Tenant</th>
+                      <th class="px-5 py-3">Amount</th>
+                      <th class="px-5 py-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="invoices-tbody" class="divide-y divide-white/[0.04] text-slate-300">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
-                  <tr>
-                    <th class="px-6 py-3">Invoice #</th>
-                    <th class="px-6 py-3">Tenant ID</th>
-                    <th class="px-6 py-3">Month</th>
-                    <th class="px-6 py-3">Total Amount</th>
-                    <th class="px-6 py-3">Paid Amount</th>
-                    <th class="px-6 py-3">Due Date</th>
-                    <th class="px-6 py-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody id="invoices-tbody" class="divide-y divide-slate-200 text-slate-700">
-                  <!-- Loaded dynamically -->
-                </tbody>
-              </table>
-            </div>
-          </div>
 
-          <!-- Recent Payments Table -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-200">
-              <h4 class="font-semibold text-slate-800 text-xs uppercase tracking-wider">Recent Collection Receipts</h4>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
-                  <tr>
-                    <th class="px-6 py-3">Receipt #</th>
-                    <th class="px-6 py-3">Tenant & Bed</th>
-                    <th class="px-6 py-3">Amount Paid</th>
-                    <th class="px-6 py-3">Method</th>
-                    <th class="px-6 py-3">Ref / UTR</th>
-                    <th class="px-6 py-3">Date</th>
-                    <th class="px-6 py-3 text-right">Receipt Voucher</th>
-                  </tr>
-                </thead>
-                <tbody id="payments-tbody" class="divide-y divide-slate-200 text-slate-700">
-                  <!-- Loaded dynamically -->
-                </tbody>
-              </table>
+            <!-- Payments Table -->
+            <div class="glass-card rounded-2xl overflow-hidden">
+              <div class="px-6 py-4 border-b border-white/[0.06] flex items-center justify-between">
+                <h4 class="font-bold text-white text-sm">Payment Receipts</h4>
+                <span class="text-2xs text-slate-400">UPI / Cash / Bank</span>
+              </div>
+              <div class="overflow-x-auto max-h-96">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-white/[0.03] text-slate-400 uppercase border-b border-white/[0.06] text-2xs sticky top-0 backdrop-blur-md">
+                    <tr>
+                      <th class="px-5 py-3">Receipt #</th>
+                      <th class="px-5 py-3">Tenant</th>
+                      <th class="px-5 py-3">Amount</th>
+                      <th class="px-5 py-3 text-right">Receipt</th>
+                    </tr>
+                  </thead>
+                  <tbody id="payments-tbody" class="divide-y divide-white/[0.04] text-slate-300">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
 
-
-        <!-- ==================== TAB 5: COMPLAINTS ==================== -->
+        <!-- ==================== TAB 5: MAINTENANCE ==================== -->
         <section id="tab-complaints" class="tab-content space-y-6">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h3 class="text-base font-semibold text-slate-800">Maintenance Requests & Tickets</h3>
-              <p class="text-xs text-slate-500">Track and resolve tenant complaints</p>
+              <h3 class="text-xl font-bold text-white">Maintenance Requests</h3>
+              <p class="text-xs text-slate-400">Plumbing, electrical, Wi-Fi, and cleaning service tickets</p>
             </div>
-            <button onclick="openModal('modal-complaint')" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded-lg flex items-center gap-2">
-              <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Raise Complaint
+            <button onclick="openModal('modal-ticket')" class="btn-gradient text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+              Report New Issue
             </button>
           </div>
 
-          <!-- Tickets List -->
-          <div id="tickets-container" class="space-y-4">
-            <!-- Loaded dynamically -->
+          <div id="tickets-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Dynamic Tickets -->
           </div>
         </section>
 
-
         <!-- ==================== TAB 6: MESS & MEALS ==================== -->
         <section id="tab-meals" class="tab-content space-y-6">
-          <!-- Daily Kitchen Headcount Card -->
-          <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white shadow-md flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <span class="px-2.5 py-1 bg-white/20 rounded-full text-xs font-medium">Kitchen Live Headcount</span>
-              <h3 class="text-xl font-bold mt-2">Today's Dinner Service</h3>
-              <p class="text-xs text-blue-100 mt-1">Calculated automatically from tenant attendance logs</p>
+              <h3 class="text-xl font-bold text-white">Mess &amp; Meal Schedule</h3>
+              <p class="text-xs text-slate-400">Weekly food menu and kitchen attendance headcount</p>
             </div>
-            <div class="flex items-center gap-6 text-center">
-              <div class="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
-                <span id="headcount-attending" class="text-3xl font-extrabold block">0</span>
-                <span class="text-xs text-blue-100">Dining In</span>
-              </div>
-              <div class="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
-                <span id="headcount-packed" class="text-3xl font-extrabold block">0</span>
-                <span class="text-xs text-blue-100">Packed Lunch</span>
-              </div>
-              <div class="bg-white/10 px-5 py-3 rounded-lg border border-white/20">
-                <span id="headcount-optout" class="text-3xl font-extrabold block">0</span>
-                <span class="text-xs text-blue-100">Opted Out</span>
-              </div>
+            <div class="flex items-center gap-3">
+              <button onclick="openModal('modal-meal-menu')" class="bg-white/[0.06] hover:bg-white/[0.12] text-white border border-white/[0.1] px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition">
+                <i data-lucide="edit-3" class="w-4 h-4 text-indigo-400"></i>
+                Update Menu
+              </button>
+              <button onclick="openModal('modal-attendance')" class="btn-gradient text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2">
+                <i data-lucide="check-square" class="w-4 h-4"></i>
+                Mark Attendance
+              </button>
             </div>
           </div>
 
-          <!-- Weekly Menu Table -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-              <h4 class="font-semibold text-slate-800 text-sm">7-Day PG Mess Menu</h4>
-              <span class="text-xs text-slate-500">Breakfast &bull; Lunch &bull; Dinner</span>
-            </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-left text-xs">
-                <thead class="bg-slate-50 text-slate-500 uppercase border-b border-slate-200 font-medium">
-                  <tr>
-                    <th class="px-6 py-3.5 w-32">Day</th>
-                    <th class="px-6 py-3.5">Breakfast</th>
-                    <th class="px-6 py-3.5">Lunch</th>
-                    <th class="px-6 py-3.5">Dinner</th>
-                  </tr>
-                </thead>
-                <tbody id="meals-tbody" class="divide-y divide-slate-200 text-slate-700">
-                  <!-- Loaded dynamically -->
-                </tbody>
-              </table>
+          <!-- Day Navigation Chips -->
+          <div class="flex items-center gap-2 overflow-x-auto pb-2" id="meal-days-chips">
+            <button onclick="switchMealDay('MONDAY')" data-day="MONDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 shrink-0">Monday</button>
+            <button onclick="switchMealDay('TUESDAY')" data-day="TUESDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0">Tuesday</button>
+            <button onclick="switchMealDay('WEDNESDAY')" data-day="WEDNESDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0">Wednesday</button>
+            <button onclick="switchMealDay('THURSDAY')" data-day="THURSDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0">Thursday</button>
+            <button onclick="switchMealDay('FRIDAY')" data-day="FRIDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0">Friday</button>
+            <button onclick="switchMealDay('SATURDAY')" data-day="SATURDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0">Saturday</button>
+            <button onclick="switchMealDay('SUNDAY')" data-day="SUNDAY" class="px-4 py-2 rounded-xl text-xs font-semibold bg-white/[0.04] text-slate-400 hover:text-white shrink-0">Sunday</button>
+          </div>
+
+          <!-- Meal Cards (Breakfast, Lunch, Dinner) -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="meals-cards-grid">
+            <!-- Dynamic -->
+          </div>
+
+          <!-- Kitchen Headcount Table -->
+          <div class="glass-card rounded-2xl p-6">
+            <h4 class="font-bold text-white text-sm mb-4">Today's Kitchen Attendance Headcount</h4>
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div class="bg-white/[0.03] p-4 rounded-xl border border-white/[0.06]">
+                <p class="text-xs text-slate-400">Breakfast</p>
+                <p id="headcount-breakfast" class="text-2xl font-extrabold text-indigo-400 mt-1">0</p>
+              </div>
+              <div class="bg-white/[0.03] p-4 rounded-xl border border-white/[0.06]">
+                <p class="text-xs text-slate-400">Lunch</p>
+                <p id="headcount-lunch" class="text-2xl font-extrabold text-purple-400 mt-1">0</p>
+              </div>
+              <div class="bg-white/[0.03] p-4 rounded-xl border border-white/[0.06]">
+                <p class="text-xs text-slate-400">Dinner</p>
+                <p id="headcount-dinner" class="text-2xl font-extrabold text-pink-400 mt-1">0</p>
+              </div>
             </div>
           </div>
         </section>
@@ -576,239 +800,256 @@
   </div>
 
   <!-- ==================== MODALS ==================== -->
-
-  <!-- 1. Onboard Tenant Modal -->
-  <div id="modal-onboard" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-semibold text-slate-900 text-base">Onboard New Tenant</h3>
-        <button onclick="closeModal('modal-onboard')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+  
+  <!-- 1. Modal: Onboard Tenant -->
+  <div id="modal-onboard" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-lg p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div>
+          <h3 class="text-lg font-bold text-white">Onboard New Tenant</h3>
+          <p class="text-xs text-slate-400">Register resident and assign an available bed</p>
+        </div>
+        <button onclick="closeModal('modal-onboard')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <form id="form-onboard" onsubmit="handleOnboardTenant(event)" class="space-y-3 text-xs">
-        <div class="grid grid-cols-2 gap-3">
+
+      <form id="form-onboard" onsubmit="handleOnboardTenant(event)" class="space-y-4 mt-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Full Name *</label>
-            <input name="full_name" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Karan Singhania" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Full Name *</label>
+            <input type="text" name="name" required placeholder="e.g. Ramesh Kumar" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Phone Number *</label>
-            <input name="phone" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="10-digit number" />
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-medium text-slate-700 mb-1">Email</label>
-            <input name="email" type="email" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="tenant@example.com" />
-          </div>
-          <div>
-            <label class="block font-medium text-slate-700 mb-1">Occupation / College</label>
-            <input name="occupation" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Software Engineer" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Phone Number *</label>
+            <input type="tel" name="phone" required placeholder="10-digit mobile" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Assign Vacant Bed *</label>
-            <select name="bed_id" id="onboard-bed-select" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">Loading available beds...</option>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Assign Bed *</label>
+            <select name="bed_id" id="onboard-bed-select" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="">Loading beds...</option>
             </select>
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Security Deposit (₹)</label>
-            <input name="security_deposit" type="number" step="100" value="10000" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Deposit Amount (₹) *</label>
+            <input type="number" name="deposit_amount" required value="2000" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">ID Proof Type</label>
-            <select name="id_proof_type" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="Aadhaar">Aadhaar Card</option>
-              <option value="Passport">Passport</option>
-              <option value="Driving License">Driving License</option>
-              <option value="Voter ID">Voter ID</option>
-              <option value="Student ID">College / Student ID</option>
-            </select>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Monthly Rent (₹) *</label>
+            <input type="number" name="monthly_rent" required placeholder="e.g. 6500" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">ID Proof Number</label>
-            <input name="id_proof_number" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. 1234-5678-9012" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Check-in Date *</label>
+            <input type="date" name="check_in_date" id="onboard-checkin-date" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modal-onboard')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">Save & Allocate Bed</button>
+
+        <div>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Emergency Contact Phone</label>
+          <input type="tel" name="emergency_contact" placeholder="Parent / Guardian phone" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500" />
+        </div>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-onboard')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="btn-gradient text-white px-5 py-2.5 rounded-xl text-xs font-bold">Complete Onboarding</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 2. Add Room Modal -->
-  <div id="modal-room" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-semibold text-slate-900 text-base">Add New Room</h3>
-        <button onclick="closeModal('modal-room')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <!-- 2. Modal: Add Room -->
+  <div id="modal-room" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-md p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div>
+          <h3 class="text-lg font-bold text-white">Add New Room</h3>
+          <p class="text-xs text-slate-400">Configure sharing capacity and amenities</p>
+        </div>
+        <button onclick="closeModal('modal-room')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
-      <form id="form-room" onsubmit="handleAddRoom(event)" class="space-y-3 text-xs">
-        <div class="grid grid-cols-2 gap-3">
+
+      <form id="form-room" onsubmit="handleAddRoom(event)" class="space-y-4 mt-5">
+        <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Room Number *</label>
-            <input name="room_number" required placeholder="e.g. 301" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Room Number *</label>
+            <input type="text" name="room_number" required placeholder="e.g. 203" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Floor *</label>
-            <input name="floor" type="number" value="1" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Floor *</label>
+            <input type="number" name="floor" required value="1" min="0" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Room Type</label>
-            <select name="room_type" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="2-Sharing" selected>2-Sharing (2 Beds)</option>
-              <option value="3-Sharing">3-Sharing (3 Beds)</option>
-              <option value="4-Sharing">4-Sharing (4 Beds)</option>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Sharing Type *</label>
+            <select name="room_type" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="2-Sharing">2-Sharing</option>
+              <option value="3-Sharing" selected>3-Sharing</option>
+              <option value="4-Sharing">4-Sharing</option>
             </select>
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Base Rent per Bed (₹) *</label>
-            <input name="base_rent" type="number" step="100" value="7500" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Base Rent / Bed (₹) *</label>
+            <input type="number" name="base_rent" required value="6500" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
         </div>
-        <div class="flex items-center gap-4 pt-1">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input name="has_ac" type="checkbox" class="rounded text-blue-600 focus:ring-blue-500" />
-            <span class="font-medium text-slate-700">Air Conditioned (AC)</span>
+
+        <div class="space-y-2 pt-1">
+          <label class="flex items-center gap-2.5 text-xs text-slate-300">
+            <input type="checkbox" name="has_attached_bathroom" checked class="rounded border-white/20 text-indigo-600 focus:ring-0 bg-slate-950" />
+            <span>Attached Bathroom (Standard in Latha PG)</span>
           </label>
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input name="has_attached_bathroom" type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500" />
-            <span class="font-medium text-slate-700">Attached Bath (Included)</span>
+          <label class="flex items-center gap-2.5 text-xs text-slate-300">
+            <input type="checkbox" name="has_ac" class="rounded border-white/20 text-indigo-600 focus:ring-0 bg-slate-950" />
+            <span>Air Conditioned (AC Room)</span>
           </label>
         </div>
-        <div>
-          <label class="block font-medium text-slate-700 mb-1">Amenities</label>
-          <input name="amenities" value="Attached Bathroom, High-Speed Wi-Fi, 24/7 CCTV, Washing Machine, Power Backup" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modal-room')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-lg font-medium shadow-sm">Create Room & Beds</button>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-room')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="btn-gradient text-white px-5 py-2.5 rounded-xl text-xs font-bold">Create Room &amp; Beds</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 3. Record Payment Modal -->
-  <div id="modal-payment" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-semibold text-slate-900 text-base">Record Payment Receipt</h3>
-        <button onclick="closeModal('modal-payment')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form id="form-payment" onsubmit="handleRecordPayment(event)" class="space-y-3 text-xs">
+  <!-- 3. Modal: Generate Invoice -->
+  <div id="modal-invoice" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-md p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
         <div>
-          <label class="block font-medium text-slate-700 mb-1">Select Tenant *</label>
-          <select name="tenant_id" id="payment-tenant-select" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-            <!-- Loaded dynamically -->
+          <h3 class="text-lg font-bold text-white">Create Rent Invoice</h3>
+          <p class="text-xs text-slate-400">Issue monthly rent bill to tenant</p>
+        </div>
+        <button onclick="closeModal('modal-invoice')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-invoice" onsubmit="handleCreateInvoice(event)" class="space-y-4 mt-5">
+        <div>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Select Tenant *</label>
+          <select name="tenant_id" id="invoice-tenant-select" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <option value="">Loading tenants...</option>
           </select>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Amount Paid (₹) *</label>
-            <input name="amount" type="number" step="100" required placeholder="e.g. 9500" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Rent Amount (₹) *</label>
+            <input type="number" name="rent_amount" id="invoice-rent-amount" required value="6500" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Payment Method</label>
-            <select name="payment_method" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="UPI">UPI (GooglePay / PhonePe)</option>
-              <option value="BANK_TRANSFER">Bank Transfer (NEFT/IMPS)</option>
-              <option value="CASH">Cash Deposit</option>
-              <option value="CARD">Debit / Credit Card</option>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Billing Month *</label>
+            <input type="text" name="billing_month" required value="September 2026" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Due Date *</label>
+          <input type="date" name="due_date" id="invoice-due-date" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+        </div>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-invoice')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="btn-gradient text-white px-5 py-2.5 rounded-xl text-xs font-bold">Issue Invoice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. Modal: Record Payment -->
+  <div id="modal-payment" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-md p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div>
+          <h3 class="text-lg font-bold text-white">Record Rent Payment</h3>
+          <p class="text-xs text-slate-400">Log incoming payment &amp; issue receipt</p>
+        </div>
+        <button onclick="closeModal('modal-payment')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-payment" onsubmit="handleRecordPayment(event)" class="space-y-4 mt-5">
+        <div>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Select Tenant *</label>
+          <select name="tenant_id" id="payment-tenant-select" onchange="updatePaymentAmountSuggestion(this.value)" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <option value="">Loading tenants...</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Amount Paid (₹) *</label>
+            <input type="number" name="amount" id="payment-amount" required placeholder="e.g. 6500" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Payment Mode *</label>
+            <select name="payment_mode" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="UPI" selected>UPI (GPay / PhonePe)</option>
+              <option value="CASH">Cash</option>
+              <option value="BANK_TRANSFER">Bank Transfer / IMPS</option>
             </select>
           </div>
         </div>
+
         <div>
-          <label class="block font-medium text-slate-700 mb-1">Reference / Transaction ID</label>
-          <input name="transaction_reference" placeholder="UPI Ref / UTR / Receipt No." class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Transaction Ref / Note</label>
+          <input type="text" name="transaction_ref" placeholder="e.g. UPI Ref #239482934" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500" />
         </div>
-        <div>
-          <label class="block font-medium text-slate-700 mb-1">Notes</label>
-          <input name="notes" placeholder="e.g. Rent for September" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-        </div>
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modal-payment')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium shadow-sm">Save & Issue Receipt</button>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-payment')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-emerald-500/20">Save &amp; Generate Receipt</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 4. Generate Invoice Modal -->
-  <div id="modal-invoice" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-semibold text-slate-900 text-base">Generate Rent Invoice</h3>
-        <button onclick="closeModal('modal-invoice')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form id="form-invoice" onsubmit="handleGenerateInvoice(event)" class="space-y-3 text-xs">
+  <!-- 5. Modal: Maintenance Ticket -->
+  <div id="modal-ticket" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-md p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
         <div>
-          <label class="block font-medium text-slate-700 mb-1">Select Tenant *</label>
-          <select name="tenant_id" id="invoice-tenant-select" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-            <!-- Loaded dynamically -->
-          </select>
+          <h3 class="text-lg font-bold text-white">Create Service Request</h3>
+          <p class="text-xs text-slate-400">Log repair, plumbing, or facility complaint</p>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-medium text-slate-700 mb-1">Billing Month (YYYY-MM) *</label>
-            <input name="billing_month" value="2026-09" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block font-medium text-slate-700 mb-1">Due Date *</label>
-            <input name="due_date" type="date" value="2026-09-05" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block font-medium text-slate-700 mb-1">Rent Amount (₹) *</label>
-            <input name="rent_amount" type="number" step="100" value="9500" required class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          <div>
-            <label class="block font-medium text-slate-700 mb-1">Utility / Electricity (₹)</label>
-            <input name="utility_charges" type="number" step="50" value="500" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-        </div>
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modal-invoice')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-lg font-medium shadow-sm">Create Invoice</button>
-        </div>
-      </form>
-    </div>
-  </div>
+        <button onclick="closeModal('modal-ticket')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
 
-  <!-- 5. Raise Complaint Modal -->
-  <div id="modal-complaint" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-        <h3 class="font-semibold text-slate-900 text-base">Raise Complaint / Ticket</h3>
-        <button onclick="closeModal('modal-complaint')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-      <form id="form-complaint" onsubmit="handleRaiseComplaint(event)" class="space-y-3 text-xs">
+      <form id="form-ticket" onsubmit="handleCreateTicket(event)" class="space-y-4 mt-5">
         <div>
-          <label class="block font-medium text-slate-700 mb-1">Title *</label>
-          <input name="title" required placeholder="e.g. Geyser not heating water" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500" />
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Issue Title *</label>
+          <input type="text" name="title" required placeholder="e.g. Bathroom Geyser not heating" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500" />
         </div>
-        <div class="grid grid-cols-2 gap-3">
+
+        <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Category</label>
-            <select name="category" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Category *</label>
+            <select name="category" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
               <option value="PLUMBING">Plumbing</option>
-              <option value="ELECTRICAL">Electrical</option>
-              <option value="WIFI">Wi-Fi / Internet</option>
-              <option value="CLEANING">Room Cleaning</option>
-              <option value="APPLIANCE">Appliance</option>
+              <option value="ELECTRICAL">Electrical / Geyser</option>
+              <option value="WIFI">High-Speed Wi-Fi</option>
+              <option value="CLEANING">Cleaning &amp; Housekeeping</option>
+              <option value="SECURITY">CCTV &amp; Locks</option>
               <option value="OTHER">Other</option>
             </select>
           </div>
           <div>
-            <label class="block font-medium text-slate-700 mb-1">Priority</label>
-            <select name="priority" class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Priority *</label>
+            <select name="priority" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
               <option value="LOW">Low</option>
               <option value="MEDIUM" selected>Medium</option>
               <option value="HIGH">High</option>
@@ -816,112 +1057,189 @@
             </select>
           </div>
         </div>
+
         <div>
-          <label class="block font-medium text-slate-700 mb-1">Detailed Description *</label>
-          <textarea name="description" required rows="3" placeholder="Explain the issue in detail..." class="w-full p-2 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Description / Location Details</label>
+          <textarea name="description" rows="3" placeholder="Room 201 attached bathroom geyser switch..." class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"></textarea>
         </div>
-        <div class="pt-3 flex justify-end gap-2 border-t border-slate-100">
-          <button type="button" onclick="closeModal('modal-complaint')" class="px-4 py-2 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 font-medium">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium shadow-sm">Submit Ticket</button>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-ticket')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="btn-gradient text-white px-5 py-2.5 rounded-xl text-xs font-bold">Submit Ticket</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- 6. View / Print Payment Receipt Modal -->
-  <div id="modal-view-receipt" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-      <!-- Modal Header (No Print) -->
-      <div class="flex items-center justify-between border-b border-slate-100 pb-3 no-print">
-        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
-          <i data-lucide="receipt" class="w-4 h-4 text-emerald-600"></i>
-          Official Payment Receipt
-        </h3>
-        <button onclick="closeModal('modal-view-receipt')" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+  <!-- 6. Modal: Meal Menu Update -->
+  <div id="modal-meal-menu" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-md p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div>
+          <h3 class="text-lg font-bold text-white">Update Meal Menu</h3>
+          <p class="text-xs text-slate-400">Set daily breakfast, lunch, or dinner menu</p>
+        </div>
+        <button onclick="closeModal('modal-meal-menu')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
 
-      <!-- Actual Printable Receipt Card -->
-      <div id="printable-receipt-card" class="border-2 border-slate-800 rounded-xl p-6 bg-white space-y-5 text-slate-900">
-        <!-- Receipt Top Header -->
-        <div class="border-b-2 border-slate-800 pb-4 text-center space-y-1">
-          <div class="inline-block bg-slate-900 text-white font-bold text-xs uppercase px-3 py-1 rounded-md tracking-wider">
-            RENT & ACCOMMODATION RECEIPT
+      <form id="form-meal-menu" onsubmit="handleUpdateMealMenu(event)" class="space-y-4 mt-5">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Day *</label>
+            <select name="day_of_week" id="meal-menu-day" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="MONDAY">Monday</option>
+              <option value="TUESDAY">Tuesday</option>
+              <option value="WEDNESDAY">Wednesday</option>
+              <option value="THURSDAY">Thursday</option>
+              <option value="FRIDAY">Friday</option>
+              <option value="SATURDAY">Saturday</option>
+              <option value="SUNDAY">Sunday</option>
+            </select>
           </div>
-          <h2 class="text-2xl font-black text-slate-950 tracking-tight pt-1">LATHA PG FOR GENTS</h2>
-          <p class="text-xs text-amber-600 font-bold">ಲತಾ ಪಿಜಿ - ಪುರುಷರಿಗೆ</p>
-          <p class="text-2xs text-slate-500">2, 3, 4 Sharing &bull; Attached Bathrooms &bull; Wi-Fi &bull; CCTV &bull; Power Backup</p>
-          <p class="text-xs font-semibold text-slate-800 pt-0.5">📞 Helpline: 9353439703 / 9019870803</p>
+          <div>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Meal Session *</label>
+            <select name="meal_type" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="BREAKFAST">Breakfast</option>
+              <option value="LUNCH">Lunch</option>
+              <option value="DINNER">Dinner</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Receipt Metadata Grid -->
+        <div>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Menu Items *</label>
+          <textarea name="items_description" required rows="3" placeholder="Idli, Vada, Sambar, Coconut Chutney, Tea/Coffee" class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-indigo-500"></textarea>
+        </div>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-meal-menu')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="btn-gradient text-white px-5 py-2.5 rounded-xl text-xs font-bold">Save Menu</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. Modal: Meal Attendance Headcount -->
+  <div id="modal-attendance" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-md p-6 sm:p-8 relative border border-white/10 modal-animate my-8">
+      <div class="flex items-center justify-between pb-4 border-b border-white/[0.08]">
+        <div>
+          <h3 class="text-lg font-bold text-white">Mark Meal Attendance</h3>
+          <p class="text-xs text-slate-400">Headcount recording for mess kitchen</p>
+        </div>
+        <button onclick="closeModal('modal-attendance')" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-attendance" onsubmit="handleMarkAttendance(event)" class="space-y-4 mt-5">
+        <div>
+          <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Select Resident *</label>
+          <select name="tenant_id" id="attendance-tenant-select" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+            <option value="">Loading tenants...</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Meal *</label>
+            <select name="meal_type" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="BREAKFAST">Breakfast</option>
+              <option value="LUNCH">Lunch</option>
+              <option value="DINNER" selected>Dinner</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-bold text-slate-400 mb-1">Attendance *</label>
+            <select name="is_attending" required class="w-full bg-slate-950/80 border border-white/[0.1] rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-indigo-500">
+              <option value="true">Attending (Eating)</option>
+              <option value="false">Skipping / Dining Out</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-attendance')" class="px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold text-slate-400 hover:text-white">Cancel</button>
+          <button type="submit" class="btn-gradient text-white px-5 py-2.5 rounded-xl text-xs font-bold">Record Attendance</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 8. Modal: Receipt Viewer (Printable & WhatsApp) -->
+  <div id="modal-view-receipt" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl w-full max-w-lg p-6 sm:p-8 relative border border-white/10 modal-animate my-8 space-y-6">
+      
+      <!-- Printable Card Box -->
+      <div id="printable-receipt-card" class="bg-slate-900 border border-white/10 p-6 sm:p-8 rounded-2xl text-slate-200 space-y-6">
+        <!-- Receipt Header -->
+        <div class="flex items-center justify-between border-b border-white/10 pb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-pink-500 flex items-center justify-center text-white font-bold text-base">
+              L
+            </div>
+            <div>
+              <h3 class="font-extrabold text-white text-base">Latha PG for Gents</h3>
+              <p class="text-2xs text-indigo-400">ಲತಾ ಪಿಜಿ &bull; 9353439703 / 9019870803</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-2xs font-extrabold uppercase">PAID RECEIPT</span>
+            <p id="rcpt-number" class="text-2xs font-mono text-slate-400 mt-1.5">RCP-0000</p>
+          </div>
+        </div>
+
+        <!-- Receipt Body Details -->
         <div class="grid grid-cols-2 gap-4 text-xs">
           <div>
-            <span class="text-2xs text-slate-400 uppercase font-semibold block">Receipt Number</span>
-            <span id="rcpt-number" class="font-mono font-bold text-slate-900">REC-XXXX</span>
+            <p class="text-2xs uppercase text-slate-500 font-bold">Received From:</p>
+            <p id="rcpt-tenant-name" class="font-bold text-white text-sm mt-0.5">Guest Name</p>
+            <p id="rcpt-bed" class="text-2xs text-slate-400">Bed: 101-A</p>
           </div>
           <div class="text-right">
-            <span class="text-2xs text-slate-400 uppercase font-semibold block">Date of Payment</span>
-            <span id="rcpt-date" class="font-medium text-slate-800">11-Sep-2026</span>
-          </div>
-          <div class="col-span-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
-            <span class="text-2xs text-slate-500 uppercase font-semibold block">Received with thanks from:</span>
-            <div class="flex items-center justify-between mt-1">
-              <span id="rcpt-tenant-name" class="text-sm font-bold text-slate-900">Tenant Name</span>
-              <span id="rcpt-tenant-phone" class="text-xs text-slate-600 font-medium">9876543210</span>
-            </div>
-            <div class="text-2xs text-slate-500 mt-1">
-              Allocated Room: <strong id="rcpt-room" class="text-slate-800">Room 101</strong> &bull; Bed: <strong id="rcpt-bed" class="text-slate-800">101-A</strong>
-            </div>
+            <p class="text-2xs uppercase text-slate-500 font-bold">Date &amp; Mode:</p>
+            <p id="rcpt-date" class="font-medium text-slate-200 mt-0.5">Sep 15, 2026</p>
+            <p id="rcpt-mode" class="text-2xs text-indigo-400 font-semibold uppercase">UPI</p>
           </div>
         </div>
 
-        <!-- Amount Highlight -->
-        <div class="bg-emerald-50 border-2 border-emerald-500/30 rounded-xl p-4 flex items-center justify-between">
+        <div class="bg-white/[0.04] p-4 rounded-xl border border-white/[0.06] flex items-center justify-between">
           <div>
-            <span class="text-2xs uppercase text-emerald-800 font-bold tracking-wider block">Amount Received</span>
-            <span class="text-xs text-slate-600" id="rcpt-notes">Monthly Rent & Maintenance</span>
-          </div>
-          <span id="rcpt-amount" class="text-2xl font-black text-emerald-700">₹0.00</span>
-        </div>
-
-        <!-- Payment Mode & Reference -->
-        <div class="grid grid-cols-2 gap-2 text-xs border-t border-slate-200 pt-3">
-          <div>
-            <span class="text-2xs text-slate-400 uppercase block font-semibold">Payment Mode:</span>
-            <span id="rcpt-method" class="font-semibold text-slate-800 uppercase">UPI</span>
+            <p class="text-xs font-semibold text-white">Rent &amp; Accommodation Charges</p>
+            <p id="rcpt-ref" class="text-2xs text-slate-400 font-mono">Ref: --</p>
           </div>
           <div class="text-right">
-            <span class="text-2xs text-slate-400 uppercase block font-semibold">Ref / UTR No:</span>
-            <span id="rcpt-ref" class="font-mono text-2xs text-slate-700">N/A</span>
+            <p id="rcpt-amount" class="text-2xl font-extrabold text-emerald-400">₹0</p>
           </div>
         </div>
 
-        <!-- Footer / Signature -->
-        <div class="pt-6 flex items-end justify-between text-2xs text-slate-500 border-t border-slate-100">
+        <!-- Footer signature -->
+        <div class="pt-4 flex items-end justify-between text-2xs text-slate-400 border-t border-white/10">
           <div>
             <p>Computer generated receipt.</p>
-            <p>Subject to realization of funds.</p>
+            <p>Thank you for choosing Latha PG!</p>
           </div>
           <div class="text-center">
-            <div class="h-8 border-b border-slate-400 w-32 mx-auto"></div>
-            <p class="font-semibold text-slate-700 mt-1">Authorized Signatory</p>
-            <p class="text-slate-400">Latha PG for Gents</p>
+            <div class="h-6 border-b border-slate-600 w-28 mx-auto"></div>
+            <p class="font-semibold text-slate-300 mt-1">Authorized Signatory</p>
           </div>
         </div>
       </div>
 
       <!-- Action Buttons (No Print) -->
-      <div class="flex items-center justify-between gap-3 pt-2 border-t border-slate-100 no-print">
-        <button type="button" onclick="closeModal('modal-view-receipt')" class="px-4 py-2 border border-slate-200 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50">
+      <div class="flex items-center justify-between gap-3 pt-2 no-print">
+        <button type="button" onclick="closeModal('modal-view-receipt')" class="px-4 py-2.5 border border-white/10 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
           Close
         </button>
         <div class="flex items-center gap-2">
-          <button id="rcpt-whatsapp-btn" onclick="shareReceiptOnWhatsApp()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm transition">
-            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+          <button id="rcpt-whatsapp-btn" onclick="shareReceiptOnWhatsApp()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
             WhatsApp
           </button>
-          <button onclick="window.print()" class="px-4 py-2 bg-slate-900 hover:bg-black text-white rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-sm transition">
-            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <button onclick="window.print()" class="px-4 py-2.5 bg-white/[0.08] hover:bg-white/[0.15] text-white border border-white/10 rounded-xl text-xs font-bold flex items-center gap-2 transition">
+            <i data-lucide="printer" class="w-4 h-4"></i>
             Print / PDF
           </button>
         </div>
@@ -929,32 +1247,32 @@
     </div>
   </div>
 
-  <!-- Mobile Bottom Navigation Bar -->
-  <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900/95 backdrop-blur-md border-t border-slate-800 flex items-center justify-around z-30 px-1 shadow-2xl">
-    <button onclick="switchTab('overview')" data-mobile-tab="overview" class="flex flex-col items-center justify-center flex-1 py-1 text-amber-400 font-medium transition">
+  <!-- ==================== MOBILE FLOATING CAPSULE NAVIGATION ==================== -->
+  <nav class="md:hidden fixed bottom-4 left-4 right-4 h-16 mobile-nav-capsule rounded-2xl flex items-center justify-around z-30 px-2">
+    <button onclick="switchTab('overview')" data-mobile-tab="overview" class="mobile-tab-btn active flex flex-col items-center justify-center flex-1 py-1 text-slate-400 transition-all duration-200">
       <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-      <span class="text-2xs mt-1">Overview</span>
+      <span class="text-2xs font-semibold mt-1">Overview</span>
     </button>
-    <button onclick="switchTab('rooms')" data-mobile-tab="rooms" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+    <button onclick="switchTab('rooms')" data-mobile-tab="rooms" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 transition-all duration-200">
       <i data-lucide="bed-double" class="w-5 h-5"></i>
-      <span class="text-2xs mt-1">Rooms</span>
+      <span class="text-2xs font-semibold mt-1">Rooms</span>
     </button>
-    <button onclick="switchTab('tenants')" data-mobile-tab="tenants" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+    <button onclick="switchTab('tenants')" data-mobile-tab="tenants" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 transition-all duration-200">
       <i data-lucide="users" class="w-5 h-5"></i>
-      <span class="text-2xs mt-1">Tenants</span>
+      <span class="text-2xs font-semibold mt-1">Tenants</span>
     </button>
-    <button onclick="switchTab('billing')" data-mobile-tab="billing" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+    <button onclick="switchTab('billing')" data-mobile-tab="billing" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 transition-all duration-200">
       <i data-lucide="receipt" class="w-5 h-5"></i>
-      <span class="text-2xs mt-1">Billing</span>
+      <span class="text-2xs font-semibold mt-1">Billing</span>
     </button>
-    <button onclick="switchTab('meals')" data-mobile-tab="meals" class="flex flex-col items-center justify-center flex-1 py-1 text-slate-400 hover:text-slate-200 transition">
+    <button onclick="switchTab('meals')" data-mobile-tab="meals" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-slate-400 transition-all duration-200">
       <i data-lucide="utensils" class="w-5 h-5"></i>
-      <span class="text-2xs mt-1">Mess</span>
+      <span class="text-2xs font-semibold mt-1">Mess</span>
     </button>
   </nav>
 
   <!-- Toast Container -->
-  <div id="toast-container" class="fixed bottom-20 md:bottom-5 right-5 z-50 space-y-2"></div>
+  <div id="toast-container" class="fixed bottom-24 md:bottom-6 right-6 z-50 space-y-2"></div>
 
   <!-- Frontend Logic Application Script -->
   <script src="/dashboard/app.js"></script>
