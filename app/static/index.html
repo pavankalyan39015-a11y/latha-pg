@@ -1229,18 +1229,25 @@
       </div>
 
       <!-- Action Buttons (No Print) -->
-      <div class="flex items-center justify-between gap-3 pt-2 no-print">
-        <button type="button" onclick="closeModal('modal-view-receipt')" class="px-4 py-2.5 border border-white/10 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
+      <div class="flex flex-wrap items-center justify-between gap-2.5 pt-2 no-print border-t border-white/[0.08]">
+        <button type="button" onclick="closeModal('modal-view-receipt')" class="px-3.5 py-2.5 border border-white/10 rounded-xl text-xs font-semibold text-slate-400 hover:text-white transition">
           Close
         </button>
-        <div class="flex items-center gap-2">
-          <button id="rcpt-whatsapp-btn" onclick="shareReceiptOnWhatsApp()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition">
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- WhatsApp Button -->
+          <button id="rcpt-whatsapp-btn" onclick="shareReceiptOnWhatsApp()" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-emerald-600/30 transition transform hover:scale-105 active:scale-95">
             <i data-lucide="message-circle" class="w-4 h-4"></i>
             WhatsApp
           </button>
-          <button onclick="window.print()" class="px-4 py-2.5 bg-white/[0.08] hover:bg-white/[0.15] text-white border border-white/10 rounded-xl text-xs font-bold flex items-center gap-2 transition">
-            <i data-lucide="printer" class="w-4 h-4"></i>
-            Print / PDF
+          <!-- Native Share Sheet Button (Mobile phone friendly) -->
+          <button onclick="shareReceiptNative()" class="px-3.5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-lg shadow-indigo-600/30 transition transform hover:scale-105 active:scale-95">
+            <i data-lucide="share-2" class="w-4 h-4"></i>
+            Share
+          </button>
+          <!-- Direct PDF Download Button (Works on Phone & Desktop) -->
+          <button id="rcpt-download-pdf-btn" onclick="downloadReceiptPDF()" class="px-4 py-2.5 btn-gradient text-white rounded-xl text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-indigo-500/30 transition transform hover:scale-105 active:scale-95">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            Download PDF
           </button>
         </div>
       </div>

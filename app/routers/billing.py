@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Response
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from datetime import datetime, date
@@ -11,6 +11,7 @@ from app.schemas.billing import (
     InvoiceResponse, InvoiceDetailResponse, InvoiceCreate, InvoiceUpdate,
     PaymentResponse, PaymentCreate, TenantDuesResponse
 )
+from app.utils.receipt_pdf import generate_receipt_pdf_bytes
 
 router = APIRouter(prefix="/billing", tags=["Billing, Rent & Payments"])
 
@@ -248,6 +249,40 @@ def get_payment_receipt(payment_id: int, db: Session = Depends(get_db)):
         "pg_contacts": "9353439703 / 9019870803",
         "pg_tagline": "Comfortable, Safe, Affordable • 2, 3, 4 Sharing"
     }
+
+
+@router.get("/payments/{payment_id}/download-pdf")
+def download_payment_receipt_pdf(payment_id: int, db: Session = Depends(get_db)):
+    """Generate and download an official PDF receipt directly on any phone or desktop."""
+    receipt_data = get_payment_receipt(payment_id=payment_id, db=db)
+    pdf_bytes = generate_receipt_pdf_bytes(receipt_data)
+    filename = f"Latha_PG_Receipt_{receipt_data['receipt_number']}.pdf"
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=\"{filename}\"",
+            "Cache-Control": "no-cache"
+        }
+    )
+
+
+@router.get("/payments/{payment_id}/view-pdf")
+def view_payment_receipt_pdf(payment_id: int, db: Session = Depends(get_db)):
+    """View official PDF receipt inline in the browser."""
+    receipt_data = get_payment_receipt(payment_id=payment_id, db=db)
+    pdf_bytes = generate_receipt_pdf_bytes(receipt_data)
+    filename = f"Latha_PG_Receipt_{receipt_data['receipt_number']}.pdf"
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"inline; filename=\"{filename}\"",
+            "Cache-Control": "no-cache"
+        }
+    )
 
 
 @router.get("/tenants/{tenant_id}/dues", response_model=TenantDuesResponse)

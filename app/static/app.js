@@ -862,27 +862,95 @@ async function showPaymentReceipt(paymentId) {
   }
 }
 
+function downloadReceiptPDF() {
+  if (!currentReceiptData || !currentReceiptData.payment_id) {
+    showToast('No receipt loaded to download.', 'error');
+    return;
+  }
+  showToast('Downloading official PDF receipt...', 'info');
+  const paymentId = currentReceiptData.payment_id;
+  const downloadUrl = `${API_BASE}/billing/payments/${paymentId}/download-pdf`;
+
+  // Direct download link trigger (universal for phones & PCs)
+  const a = document.createElement('a');
+  a.href = downloadUrl;
+  a.setAttribute('download', `Latha_PG_Receipt_${currentReceiptData.receipt_number || 'REC'}.pdf`);
+  a.setAttribute('target', '_blank');
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    if (a.parentNode) a.parentNode.removeChild(a);
+  }, 1000);
+}
+
 function shareReceiptOnWhatsApp() {
+  if (!currentReceiptData) {
+    showToast('No receipt selected.', 'error');
+    return;
+  }
+  const d = currentReceiptData;
+  const origin = window.location.origin;
+  const pdfLink = `${origin}${API_BASE}/billing/payments/${d.payment_id}/download-pdf`;
+
+  const text = `*LATHA PG FOR GENTS - PAYMENT RECEIPT*\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `📋 *Receipt No:* ${d.receipt_number}\n` +
+    `📅 *Date:* ${d.payment_date}\n` +
+    `👤 *Tenant:* ${d.tenant_name}\n` +
+    `🛏️ *Bed:* ${d.bed_number || 'Standard'}\n` +
+    `💰 *Amount Paid:* ₹${d.amount ? d.amount.toLocaleString('en-IN') : 0}\n` +
+    `💳 *Payment Mode:* ${d.payment_method} (${d.transaction_reference || 'Ref: Verified'})\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `📄 *Download Official PDF Receipt:*\n` +
+    `${pdfLink}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `Thank you for staying at Latha PG!\n` +
+    `🏢 Latha PG for Gents (ಲತಾ ಪಿಜಿ)\n` +
+    `📞 Helplines: 9353439703 / 9019870803`;
+
+  const rawPhone = d.tenant_phone && d.tenant_phone !== 'N/A' ? d.tenant_phone.replace(/[^0-9]/g, '') : '';
+  
+  let waUrl = '';
+  if (rawPhone.length >= 10) {
+    waUrl = `https://wa.me/91${rawPhone.slice(-10)}?text=${encodeURIComponent(text)}`;
+  } else {
+    waUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+  }
+
+  // Open WhatsApp directly without popup blocker
+  showToast('Opening WhatsApp...', 'info');
+  window.location.href = waUrl;
+}
+
+async function shareReceiptNative() {
   if (!currentReceiptData) return;
   const d = currentReceiptData;
-  const text = `*LATHA PG FOR GENTS - PAYMENT RECEIPT*\n` +
-    `--------------------------------\n` +
-    `Receipt No: ${d.receipt_number}\n` +
-    `Date: ${d.payment_date}\n` +
+  const origin = window.location.origin;
+  const pdfLink = `${origin}${API_BASE}/billing/payments/${d.payment_id}/download-pdf`;
+
+  const shareText = `*Latha PG Rent Receipt*\n` +
+    `Receipt: ${d.receipt_number}\n` +
     `Tenant: ${d.tenant_name}\n` +
-    `Bed: ${d.bed_number || 'Standard'}\n` +
-    `Amount Paid: ₹${d.amount.toLocaleString('en-IN')}\n` +
-    `Payment Mode: ${d.payment_method} (Ref: ${d.transaction_reference || 'N/A'})\n` +
-    `--------------------------------\n` +
-    `Thank you for staying at Latha PG!\n` +
+    `Amount: ₹${d.amount ? d.amount.toLocaleString('en-IN') : 0}\n` +
+    `Download PDF: ${pdfLink}\n` +
     `Helplines: 9353439703 / 9019870803`;
 
-  const phone = d.tenant_phone && d.tenant_phone !== 'N/A' ? d.tenant_phone.replace(/[^0-9]/g, '') : '';
-  const url = phone.length >= 10
-    ? `https://api.whatsapp.com/send?phone=91${phone.slice(-10)}&text=${encodeURIComponent(text)}`
-    : `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-
-  window.open(url, '_blank');
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: `Latha PG Receipt - ${d.receipt_number}`,
+        text: shareText,
+        url: pdfLink
+      });
+      showToast('Shared successfully!');
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        shareReceiptOnWhatsApp();
+      }
+    }
+  } else {
+    shareReceiptOnWhatsApp();
+  }
 }
 
 async function handleCreateInvoice(e) {
