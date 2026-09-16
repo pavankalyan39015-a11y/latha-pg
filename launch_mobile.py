@@ -70,15 +70,15 @@ def main():
     <meta charset="UTF-8">
     <title>Latha PG Manager - Mobile Connect</title>
     <style>
-        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }}
-        .card {{ background: #1e293b; padding: 32px; border-radius: 16px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5); text-align: center; max-width: 420px; width: 100%; border: 1px solid #334155; }}
-        h1 {{ color: #f59e0b; margin-top: 0; font-size: 22px; }}
-        p {{ color: #94a3b8; font-size: 14px; margin: 8px 0 20px; line-height: 1.5; }}
-        .qr-wrapper {{ background: white; padding: 16px; border-radius: 12px; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); }}
+        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #031B40 0%, #062B63 100%); color: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }}
+        .card {{ background: rgba(11, 79, 156, 0.25); backdrop-filter: blur(12px); padding: 32px; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); text-align: center; max-width: 440px; width: 100%; border: 1.5px solid rgba(255, 210, 0, 0.3); }}
+        h1 {{ color: #FFD200; margin-top: 0; font-size: 22px; font-weight: 700; }}
+        p {{ color: #D8E6F3; font-size: 14px; margin: 8px 0 20px; line-height: 1.5; }}
+        .qr-wrapper {{ background: white; padding: 16px; border-radius: 16px; display: inline-block; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); border: 2px solid #FFD200; }}
         img {{ display: block; width: 220px; height: 220px; }}
-        .url-box {{ background: #0f172a; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 13px; color: #38bdf8; word-break: break-all; border: 1px solid #334155; margin-bottom: 16px; }}
-        .badge {{ background: #059669; color: white; padding: 4px 12px; border-radius: 9999px; font-size: 12px; font-weight: 600; display: inline-block; margin-bottom: 12px; }}
-        .instructions {{ text-align: left; background: #0f172a; padding: 16px; border-radius: 8px; font-size: 13px; color: #cbd5e1; border-left: 4px solid #f59e0b; }}
+        .url-box {{ background: #031B40; padding: 12px; border-radius: 10px; font-family: monospace; font-size: 13px; color: #FFD200; word-break: break-all; border: 1px solid #0B4F9C; margin-bottom: 16px; }}
+        .badge {{ background: #10A875; color: white; padding: 5px 14px; border-radius: 9999px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 14px; letter-spacing: 0.5px; }}
+        .instructions {{ text-align: left; background: #031B40; padding: 16px; border-radius: 10px; font-size: 13px; color: #EAF3FA; border-left: 4px solid #FFD200; }}
         .instructions ol {{ margin: 0; padding-left: 20px; }}
         .instructions li {{ margin-bottom: 6px; }}
     </style>
