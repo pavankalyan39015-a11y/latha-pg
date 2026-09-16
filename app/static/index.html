@@ -214,6 +214,13 @@
             <i data-lucide="bed-double" class="w-5 h-5 text-[#FFD200]"></i>
             <span>Rooms &amp; Beds</span>
           </button>
+          <button data-tab-btn="bookings" onclick="switchTab('bookings')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl transition text-left text-blue-100 hover:bg-[#0B4F9C]/50 hover:text-white">
+            <div class="flex items-center gap-3.5">
+              <i data-lucide="calendar-check" class="w-5 h-5 text-[#FFD200]"></i>
+              <span>Bookings &amp; Inquiries</span>
+            </div>
+            <span id="badge-inquiries-count" class="hidden px-2 py-0.5 rounded-full text-2xs font-extrabold bg-[#F21F26] text-white">0</span>
+          </button>
           <button data-tab-btn="tenants" onclick="switchTab('tenants')" class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl transition text-left text-blue-100 hover:bg-[#0B4F9C]/50 hover:text-white">
             <i data-lucide="users" class="w-5 h-5 text-[#FFD200]"></i>
             <span>Tenants &amp; KYC</span>
@@ -231,6 +238,7 @@
             <span>Mess &amp; Meals</span>
           </button>
         </nav>
+
       </div>
 
       <!-- Bottom PG Contact & Helpline Card -->
@@ -290,6 +298,13 @@
             <span>Install App</span>
           </button>
 
+          <!-- Public Room Tour & Inquiry Action -->
+          <button onclick="openRoomTourModal()" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#FFD200] hover:bg-yellow-300 text-[#062B63] text-xs font-black rounded-xl shadow-md transition transform hover:scale-105 active:scale-95">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-[#062B63]"></i>
+            <span class="hidden sm:inline">Room Tour &amp; Booking</span>
+            <span class="sm:hidden">Tour</span>
+          </button>
+
           <button onclick="openModal('modal-onboard')" class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 bg-[#0B4F9C] hover:bg-blue-700 text-white text-xs font-bold rounded-xl shadow-sm border border-blue-400/30 transition">
             <i data-lucide="user-plus" class="w-3.5 h-3.5 text-[#FFD200]"></i>
             <span class="hidden sm:inline">Onboard</span>
@@ -304,6 +319,7 @@
           </button>
         </div>
       </header>
+
 
       <!-- Main Body with Soft Light Blue/Gray Background #EAF3FA -->
       <main class="p-4 sm:p-6 md:p-8 pb-28 md:pb-10 flex-1 max-w-7xl w-full mx-auto space-y-6">
@@ -403,8 +419,87 @@
             </div>
           </div>
 
+          <!-- Interactive Room Showcase & Photo Gallery Strip -->
+          <div class="brand-card rounded-2xl sm:rounded-3xl p-6 border-2 border-[#0B4F9C]/30 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#0B4F9C] text-[#FFD200] flex items-center justify-center font-bold shadow">
+                  <i data-lucide="image" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="text-base font-extrabold text-[#062B63]">Hostel Showcase &amp; Room Photo Tour</h4>
+                  <p class="text-xs text-slate-500 font-medium">Real photos of accommodation, attached washrooms, and study facilities</p>
+                </div>
+              </div>
+              <button onclick="openRoomTourModal()" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-[#FFD200] hover:bg-yellow-300 text-[#062B63] text-xs font-black flex items-center gap-2 shadow-sm transition transform hover:scale-105">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <span>Open Full Tour &amp; Book Bed</span>
+              </button>
+            </div>
+
+            <!-- Visual Photo Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- 1. 2-Sharing -->
+              <div onclick="openRoomTourModal(); setTourImage('/dashboard/assets/room_2_sharing.jpg', '2-Sharing Luxury Room', 'Twin luxury beds, clean tiled flooring, private study space', '2-Sharing');" class="cursor-pointer group relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="h-44 w-full bg-slate-900 overflow-hidden">
+                  <img src="/dashboard/assets/room_2_sharing.jpg" alt="2 Sharing Room" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" />
+                </div>
+                <div class="p-3.5 bg-white space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-[#062B63]">2-Sharing Room</span>
+                    <span class="text-xs font-black text-[#0B4F9C]">₹8,500/mo</span>
+                  </div>
+                  <p class="text-2xs text-slate-500">Twin beds, attached bath &amp; WiFi</p>
+                </div>
+              </div>
+
+              <!-- 2. 3-Sharing -->
+              <div onclick="openRoomTourModal(); setTourImage('/dashboard/assets/room_3_sharing.jpg', '3-Sharing Comfort Room', 'Spacious 3-bed layout with individual cupboards & sockets', '3-Sharing');" class="cursor-pointer group relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="h-44 w-full bg-slate-900 overflow-hidden">
+                  <img src="/dashboard/assets/room_3_sharing.jpg" alt="3 Sharing Room" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" />
+                </div>
+                <div class="p-3.5 bg-white space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-[#062B63]">3-Sharing Room</span>
+                    <span class="text-xs font-black text-[#0B4F9C]">₹7,000/mo</span>
+                  </div>
+                  <p class="text-2xs text-slate-500">Triple beds, storage &amp; daily food</p>
+                </div>
+              </div>
+
+              <!-- 3. 4-Sharing -->
+              <div onclick="openRoomTourModal(); setTourImage('/dashboard/assets/room_4_sharing.jpg', '4-Sharing Budget Room', 'Cost-effective 4-sharing with dedicated lockers & ventilation', '4-Sharing');" class="cursor-pointer group relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="h-44 w-full bg-slate-900 overflow-hidden">
+                  <img src="/dashboard/assets/room_4_sharing.jpg" alt="4 Sharing Room" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" />
+                </div>
+                <div class="p-3.5 bg-white space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-[#062B63]">4-Sharing Room</span>
+                    <span class="text-xs font-black text-[#10A875]">₹5,800/mo</span>
+                  </div>
+                  <p class="text-2xs text-slate-500">Budget friendly with all amenities</p>
+                </div>
+              </div>
+
+              <!-- 4. Facilities & Washroom -->
+              <div onclick="openRoomTourModal(); setTourImage('/dashboard/assets/attached_bathroom.jpg', 'Attached Western Washroom', '24/7 hot water geyser, hygienic sanitary fittings, daily cleaning', 'Washroom');" class="cursor-pointer group relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm hover:shadow-md transition">
+                <div class="h-44 w-full bg-slate-900 overflow-hidden">
+                  <img src="/dashboard/assets/attached_bathroom.jpg" alt="Attached Washroom" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-110" />
+                </div>
+                <div class="p-3.5 bg-white space-y-1">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-extrabold text-[#062B63]">Attached Bathrooms</span>
+                    <span class="text-2xs font-extrabold text-[#10A875]">Geyser Fitted</span>
+                  </div>
+                  <p class="text-2xs text-slate-500">24/7 hot water &amp; hygienic sanitation</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Metric KPI Cards in White with Brand Accents -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+
             <!-- 1. Occupancy Card (Royal Blue) -->
             <div class="brand-card rounded-2xl p-6 relative">
               <div class="flex items-center justify-between">
@@ -740,9 +835,76 @@
           </div>
         </section>
 
+        <!-- ==================== TAB 7: BOOKINGS & INQUIRIES ==================== -->
+        <section id="tab-bookings" class="tab-content space-y-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="text-xl font-extrabold text-[#062B63] flex items-center gap-2">
+                <span>Room Bookings &amp; Inquiries</span>
+                <span id="bookings-total-badge" class="px-2.5 py-0.5 rounded-full text-xs font-black bg-[#0B4F9C] text-white">0</span>
+              </h3>
+              <p class="text-xs text-slate-500 font-medium">Manage prospective tenant walk-ins, phone inquiries, and web booking requests</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <button onclick="openRoomTourModal()" class="bg-[#FFD200] hover:bg-yellow-300 text-[#062B63] px-4 py-2 rounded-xl text-xs font-black flex items-center gap-2 shadow-sm transition">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                Room Showcase
+              </button>
+              <button onclick="openModal('modal-new-inquiry')" class="bg-[#0B4F9C] hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 shadow-sm transition">
+                <i data-lucide="plus-circle" class="w-4 h-4 text-[#FFD200]"></i>
+                Add Walk-in
+              </button>
+            </div>
+          </div>
+
+          <!-- Status KPI Summary -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="brand-card rounded-xl p-4 border-l-4 border-amber-500">
+              <p class="text-2xs uppercase font-extrabold text-amber-600">New Inquiries</p>
+              <h4 id="stat-bookings-new" class="text-2xl font-black text-[#062B63] mt-1">0</h4>
+            </div>
+            <div class="brand-card rounded-xl p-4 border-l-4 border-sky-500">
+              <p class="text-2xs uppercase font-extrabold text-sky-600">Contacted</p>
+              <h4 id="stat-bookings-contacted" class="text-2xl font-black text-[#062B63] mt-1">0</h4>
+            </div>
+            <div class="brand-card rounded-xl p-4 border-l-4 border-purple-500">
+              <p class="text-2xs uppercase font-extrabold text-purple-600">Visited PG</p>
+              <h4 id="stat-bookings-visited" class="text-2xl font-black text-[#062B63] mt-1">0</h4>
+            </div>
+            <div class="brand-card rounded-xl p-4 border-l-4 border-emerald-500">
+              <p class="text-2xs uppercase font-extrabold text-emerald-600">Converted / Booked</p>
+              <h4 id="stat-bookings-booked" class="text-2xl font-black text-[#062B63] mt-1">0</h4>
+            </div>
+          </div>
+
+          <!-- Search & Filter Controls -->
+          <div class="brand-card rounded-2xl p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <!-- Filter Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-1" id="booking-filter-pills">
+              <button onclick="filterBookings('ALL')" data-filter="ALL" class="px-3 py-1.5 rounded-lg text-xs font-extrabold bg-[#062B63] text-white border border-[#FFD200]">All</button>
+              <button onclick="filterBookings('NEW')" data-filter="NEW" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">New</button>
+              <button onclick="filterBookings('CONTACTED')" data-filter="CONTACTED" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Contacted</button>
+              <button onclick="filterBookings('VISITED')" data-filter="VISITED" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Visited</button>
+              <button onclick="filterBookings('BOOKED')" data-filter="BOOKED" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Booked</button>
+            </div>
+
+            <!-- Search Field -->
+            <div class="relative w-full md:w-72">
+              <input type="text" id="bookings-search-input" oninput="searchBookings(this.value)" placeholder="Search by name, phone, ref..." class="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 focus:outline-none focus:border-[#0B4F9C]" />
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+            </div>
+          </div>
+
+          <!-- Bookings Grid -->
+          <div id="bookings-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Populated dynamically by app.js -->
+          </div>
+        </section>
+
       </main>
     </div>
   </div>
+
 
   <!-- ==================== MODALS ==================== -->
   
@@ -1202,6 +1364,340 @@
     </div>
   </div>
 
+  <!-- 7. Modal: Public Room Tour Showcase & Online Booking Inquiry -->
+  <div id="modal-room-tour" class="fixed inset-0 z-50 bg-[#062B63]/85 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+    <div class="bg-white rounded-3xl w-full max-w-4xl p-6 sm:p-8 relative border-2 border-[#FFD200] shadow-2xl modal-animate my-6 text-slate-900 max-h-[92vh] flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-[#062B63] text-[#FFD200] flex items-center justify-center font-extrabold shadow">
+            <i data-lucide="building-2" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="text-xl font-extrabold text-[#062B63]">Latha PG Room Tour &amp; Booking</h3>
+              <span class="px-2 py-0.5 rounded bg-[#F21F26] text-white text-2xs font-black uppercase">FOR GENTS</span>
+            </div>
+            <p class="text-xs text-slate-500 font-medium">Explore room facilities, verified rates &amp; instant bed booking inquiry</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-room-tour')" class="text-slate-400 hover:text-[#062B63] p-1.5 rounded-xl hover:bg-slate-100 transition">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable Content -->
+      <div class="overflow-y-auto pr-1 py-4 space-y-6 flex-1">
+        
+        <!-- Interactive Gallery -->
+        <div class="space-y-3">
+          <!-- Main Hero Image Display -->
+          <div class="relative w-full h-64 sm:h-80 rounded-2xl overflow-hidden shadow-inner border-2 border-[#0B4F9C] bg-slate-900 group">
+            <img id="tour-hero-img" src="/dashboard/assets/hero_pg_bedroom.jpg" alt="Latha PG Room Preview" class="w-full h-full object-cover transition-all duration-300 group-hover:scale-105" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4 text-white">
+              <span id="tour-img-badge" class="self-start px-2.5 py-1 rounded-md bg-[#FFD200] text-[#062B63] text-2xs font-black uppercase tracking-wider mb-1">
+                2-Sharing Executive
+              </span>
+              <h4 id="tour-img-title" class="text-lg font-extrabold">Executive Double Sharing Room with Attached Washroom</h4>
+              <p id="tour-img-desc" class="text-xs text-slate-200">Spacious ventilation, wooden storage wardrobe, study desk, and orthopaedic mattresses.</p>
+            </div>
+          </div>
+
+          <!-- Thumbnail Strip -->
+          <div class="grid grid-cols-4 sm:grid-cols-8 gap-2">
+            <button type="button" onclick="setTourImage('/dashboard/assets/hero_pg_bedroom.jpg', '2-Sharing Room', 'Spacious ventilation, wooden storage wardrobe & high-speed Wi-Fi', '2-Sharing')" class="tour-thumb-btn active rounded-xl overflow-hidden border-2 border-[#FFD200] h-16 relative transition hover:opacity-90">
+              <img src="/dashboard/assets/hero_pg_bedroom.jpg" class="w-full h-full object-cover" alt="Hero" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/room_2_sharing.jpg', '2-Sharing Luxury Room', 'Twin luxury beds, clean tiled flooring, private study space', '2-Sharing')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/room_2_sharing.jpg" class="w-full h-full object-cover" alt="2 Sharing" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/room_3_sharing.jpg', '3-Sharing Comfort Room', 'Spacious 3-bed layout with individual cupboards & sockets', '3-Sharing')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/room_3_sharing.jpg" class="w-full h-full object-cover" alt="3 Sharing" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/room_4_sharing.jpg', '4-Sharing Budget Room', 'Cost-effective 4-sharing with dedicated lockers & ventilation', '4-Sharing')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/room_4_sharing.jpg" class="w-full h-full object-cover" alt="4 Sharing" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/attached_bathroom.jpg', 'Attached Western Washroom', '24/7 hot water geyser, hygienic sanitary fittings, daily cleaning', 'Washroom')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/attached_bathroom.jpg" class="w-full h-full object-cover" alt="Bathroom" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/study_area.jpg', 'Study & Work From PG Desk', 'Quiet study corners with high-speed internet & power outlets', 'Work / Study')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/study_area.jpg" class="w-full h-full object-cover" alt="Study Desk" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/common_lounge.jpg', 'Common Lounge & Dining', 'Hygienic dining hall with water purifier and refrigerator', 'Dining Lounge')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/common_lounge.jpg" class="w-full h-full object-cover" alt="Lounge" />
+            </button>
+            <button type="button" onclick="setTourImage('/dashboard/assets/building_exterior.jpg', 'Building & Entrance', '24/7 CCTV surveillance, secured biometric entry and parking', 'Exterior')" class="tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition">
+              <img src="/dashboard/assets/building_exterior.jpg" class="w-full h-full object-cover" alt="Building" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Sharing Rate Cards -->
+        <div>
+          <h4 class="text-sm font-extrabold text-[#062B63] mb-3 flex items-center gap-2">
+            <i data-lucide="tag" class="w-4 h-4 text-[#FFD200]"></i>
+            Transparent Monthly Rent Structure (Food &amp; WiFi Included)
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- 2-Sharing -->
+            <div class="p-4 rounded-2xl border-2 border-[#0B4F9C] bg-[#EAF3FA] relative">
+              <span class="absolute -top-2.5 right-4 bg-[#0B4F9C] text-white text-3xs font-black uppercase px-2 py-0.5 rounded-full">POPULAR</span>
+              <p class="text-xs font-black text-[#062B63]">2-Sharing Room</p>
+              <div class="flex items-baseline gap-1 mt-1">
+                <span class="text-2xl font-black text-[#062B63]">₹8,500</span>
+                <span class="text-2xs text-slate-500 font-semibold">/ month</span>
+              </div>
+              <ul class="mt-3 space-y-1.5 text-2xs text-slate-700 font-medium">
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> Attached Western Bathroom</li>
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> 3 Times Nutritious Food</li>
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> High-Speed Unlimited Wi-Fi</li>
+              </ul>
+              <button type="button" onclick="selectSharingPreference('2 Sharing')" class="mt-3 w-full py-1.5 rounded-xl bg-[#0B4F9C] hover:bg-blue-700 text-white text-xs font-bold transition">
+                Select 2-Sharing
+              </button>
+            </div>
+
+            <!-- 3-Sharing -->
+            <div class="p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#FFD200] transition">
+              <p class="text-xs font-black text-[#062B63]">3-Sharing Room</p>
+              <div class="flex items-baseline gap-1 mt-1">
+                <span class="text-2xl font-black text-[#062B63]">₹7,000</span>
+                <span class="text-2xs text-slate-500 font-semibold">/ month</span>
+              </div>
+              <ul class="mt-3 space-y-1.5 text-2xs text-slate-700 font-medium">
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> Attached Western Bathroom</li>
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> 3 Times Nutritious Food</li>
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> Individual Wardrobe &amp; Lock</li>
+              </ul>
+              <button type="button" onclick="selectSharingPreference('3 Sharing')" class="mt-3 w-full py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#062B63] text-xs font-bold transition">
+                Select 3-Sharing
+              </button>
+            </div>
+
+            <!-- 4-Sharing -->
+            <div class="p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-[#10A875] transition">
+              <span class="absolute -top-2.5 right-4 bg-[#10A875] text-white text-3xs font-black uppercase px-2 py-0.5 rounded-full">BUDGET BEST</span>
+              <p class="text-xs font-black text-[#062B63]">4-Sharing Room</p>
+              <div class="flex items-baseline gap-1 mt-1">
+                <span class="text-2xl font-black text-[#062B63]">₹5,800</span>
+                <span class="text-2xs text-slate-500 font-semibold">/ month</span>
+              </div>
+              <ul class="mt-3 space-y-1.5 text-2xs text-slate-700 font-medium">
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> Attached Bathroom &amp; Geyser</li>
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> 3 Times Daily Meals</li>
+                <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-[#10A875]"></i> Washing Machine &amp; Housekeeping</li>
+              </ul>
+              <button type="button" onclick="selectSharingPreference('4 Sharing')" class="mt-3 w-full py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#062B63] text-xs font-bold transition">
+                Select 4-Sharing
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Booking Inquiry Form -->
+        <div class="bg-gradient-to-br from-[#062B63] to-[#041D44] p-6 rounded-2xl text-white border-2 border-[#FFD200] shadow-xl">
+          <div class="flex items-center gap-2.5 mb-3">
+            <span class="w-8 h-8 rounded-lg bg-[#FFD200] text-[#062B63] flex items-center justify-center font-bold">
+              <i data-lucide="send" class="w-4 h-4"></i>
+            </span>
+            <div>
+              <h4 class="text-base font-extrabold text-white">Book Your Bed or Schedule PG Visit</h4>
+              <p class="text-xs text-blue-200">Fill in your contact details for instant confirmation &amp; WhatsApp manager support</p>
+            </div>
+          </div>
+
+          <form id="form-public-inquiry" onsubmit="handlePublicBookingInquiry(event)" class="space-y-4 mt-4 text-slate-900">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Your Full Name *</label>
+                <input type="text" id="inq-name" name="full_name" required placeholder="e.g. Ramesh Reddy" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#FFD200]" />
+              </div>
+              <div>
+                <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Phone / WhatsApp Number *</label>
+                <input type="tel" id="inq-phone" name="phone" required placeholder="10-digit mobile" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#FFD200]" />
+              </div>
+              <div>
+                <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Email Address</label>
+                <input type="email" id="inq-email" name="email" placeholder="name@example.com" class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#FFD200]" />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Sharing Preference *</label>
+                <select id="inq-sharing" name="sharing_preference" required class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#FFD200]">
+                  <option value="2 Sharing" selected>2 Sharing (₹8,500/mo)</option>
+                  <option value="3 Sharing">3 Sharing (₹7,000/mo)</option>
+                  <option value="4 Sharing">4 Sharing (₹5,800/mo)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Room AC Choice *</label>
+                <select id="inq-roomtype" name="room_type" required class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#FFD200]">
+                  <option value="Standard Non-AC">Standard Non-AC (Best Value)</option>
+                  <option value="Executive AC">Executive AC (Air Conditioned)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Preferred Move-in Date *</label>
+                <input type="date" id="inq-date" name="preferred_move_in_date" required class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:ring-2 focus:ring-[#FFD200]" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-2xs uppercase font-extrabold text-blue-200 mb-1">Special Requirements / Workplace / College</label>
+              <input type="text" id="inq-notes" name="notes" placeholder="e.g. Working at Manyata Tech Park, need parking slot, etc." class="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#FFD200]" />
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+              <div class="flex items-center gap-2 text-2xs text-blue-100">
+                <i data-lucide="shield-check" class="w-4 h-4 text-[#FFD200]"></i>
+                <span>Zero brokerage. Direct PG management booking.</span>
+              </div>
+              <button type="submit" id="btn-submit-inquiry" class="bg-[#FFD200] hover:bg-yellow-300 text-[#062B63] px-6 py-3 rounded-xl text-xs font-black shadow-xl transition transform hover:scale-105 active:scale-95 flex items-center gap-2">
+                <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                Submit Booking Inquiry
+              </button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. Modal: Add Walk-in / Phone Lead (Admin) -->
+  <div id="modal-new-inquiry" class="fixed inset-0 z-50 bg-[#062B63]/75 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl w-full max-w-lg p-6 sm:p-8 relative border-2 border-[#0B4F9C] shadow-2xl modal-animate my-8 text-slate-900">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div>
+          <h3 class="text-lg font-extrabold text-[#062B63]">Record New Inquiry</h3>
+          <p class="text-xs text-slate-500">Log phone lead or walk-in candidate</p>
+        </div>
+        <button onclick="closeModal('modal-new-inquiry')" class="text-slate-400 hover:text-[#062B63] p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-admin-inquiry" onsubmit="handleAdminNewInquiry(event)" class="space-y-4 mt-5">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Candidate Name *</label>
+            <input type="text" name="full_name" required placeholder="Full Name" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#0B4F9C]" />
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Mobile Phone *</label>
+            <input type="tel" name="phone" required placeholder="10-digit number" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#0B4F9C]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Sharing Choice *</label>
+            <select name="sharing_preference" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#0B4F9C]">
+              <option value="2 Sharing">2 Sharing (₹8,500)</option>
+              <option value="3 Sharing" selected>3 Sharing (₹7,000)</option>
+              <option value="4 Sharing">4 Sharing (₹5,800)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Room Type</label>
+            <select name="room_type" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#0B4F9C]">
+              <option value="Standard Non-AC">Standard Non-AC</option>
+              <option value="Executive AC">Executive AC</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Move-in Date *</label>
+            <input type="date" name="preferred_move_in_date" id="admin-inq-date" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0B4F9C]" />
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Email (Optional)</label>
+            <input type="email" name="email" placeholder="name@example.com" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0B4F9C]" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Manager Notes / Source</label>
+          <input type="text" name="notes" placeholder="e.g. Referred by Room 102, visited around 4 PM" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#0B4F9C]" />
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-new-inquiry')" class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-50">Cancel</button>
+          <button type="submit" class="bg-[#0B4F9C] hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-md">Save Inquiry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. Modal: 1-Click Convert Inquiry to Tenant -->
+  <div id="modal-convert-tenant" class="fixed inset-0 z-50 bg-[#062B63]/75 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl w-full max-w-lg p-6 sm:p-8 relative border-2 border-[#10A875] shadow-2xl modal-animate my-8 text-slate-900">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200">
+        <div>
+          <span class="px-2 py-0.5 rounded bg-[#10A875] text-white text-3xs font-black uppercase">CONFIRM ADMISSION</span>
+          <h3 class="text-lg font-extrabold text-[#062B63] mt-1">Convert Lead to Active Tenant</h3>
+          <p class="text-xs text-slate-500">Allocate available bed and activate resident record</p>
+        </div>
+        <button onclick="closeModal('modal-convert-tenant')" class="text-slate-400 hover:text-[#062B63] p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="form-convert-tenant" onsubmit="handleConvertInquiryToTenant(event)" class="space-y-4 mt-5">
+        <input type="hidden" id="convert-inquiry-id" name="inquiry_id" />
+
+        <div class="bg-[#EAF3FA] p-3.5 rounded-xl border border-blue-200 space-y-1">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-[#062B63]" id="convert-lead-name">Candidate Name</span>
+            <span class="font-mono text-2xs font-bold text-slate-600" id="convert-lead-ref">LATHA-BKG-0000</span>
+          </div>
+          <p class="text-2xs text-slate-600" id="convert-lead-contact">Phone: 0000000000</p>
+        </div>
+
+        <div>
+          <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Select Available Bed Slot *</label>
+          <select id="convert-bed-select" name="bed_id" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-[#10A875]">
+            <option value="">Loading available beds...</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Security Deposit (₹) *</label>
+            <input type="number" name="security_deposit" required value="3000" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#10A875]" />
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Occupation / Workplace</label>
+            <input type="text" name="occupation" placeholder="e.g. IT Engineer / Student" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#10A875]" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Emergency Contact Person</label>
+            <input type="text" name="emergency_contact_name" placeholder="Parent / Relative" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#10A875]" />
+          </div>
+          <div>
+            <label class="block text-2xs uppercase font-extrabold text-slate-600 mb-1">Emergency Phone</label>
+            <input type="tel" name="emergency_contact_phone" placeholder="Emergency Mobile" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-[#10A875]" />
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
+          <button type="button" onclick="closeModal('modal-convert-tenant')" class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-600 hover:bg-slate-50">Cancel</button>
+          <button type="submit" class="bg-[#10A875] hover:bg-emerald-600 text-white px-5 py-2.5 rounded-xl text-xs font-black shadow-md flex items-center gap-2">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+            Confirm &amp; Allocate Bed
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ==================== MOBILE DEEP NAVY CAPSULE NAVIGATION ==================== -->
   <nav class="md:hidden fixed bottom-4 left-4 right-4 h-16 mobile-nav-capsule rounded-2xl flex items-center justify-around z-30 px-2">
     <button onclick="switchTab('overview')" data-mobile-tab="overview" class="mobile-tab-btn active flex flex-col items-center justify-center flex-1 py-1 text-blue-200 transition-all duration-200">
@@ -1212,6 +1708,10 @@
       <i data-lucide="bed-double" class="w-5 h-5"></i>
       <span class="text-2xs font-bold mt-1">Rooms</span>
     </button>
+    <button onclick="switchTab('bookings')" data-mobile-tab="bookings" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-blue-200 transition-all duration-200">
+      <i data-lucide="calendar-check" class="w-5 h-5"></i>
+      <span class="text-2xs font-bold mt-1">Leads</span>
+    </button>
     <button onclick="switchTab('tenants')" data-mobile-tab="tenants" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-blue-200 transition-all duration-200">
       <i data-lucide="users" class="w-5 h-5"></i>
       <span class="text-2xs font-bold mt-1">Tenants</span>
@@ -1220,11 +1720,8 @@
       <i data-lucide="receipt" class="w-5 h-5"></i>
       <span class="text-2xs font-bold mt-1">Billing</span>
     </button>
-    <button onclick="switchTab('meals')" data-mobile-tab="meals" class="mobile-tab-btn flex flex-col items-center justify-center flex-1 py-1 text-blue-200 transition-all duration-200">
-      <i data-lucide="utensils" class="w-5 h-5"></i>
-      <span class="text-2xs font-bold mt-1">Mess</span>
-    </button>
   </nav>
+
 
   <!-- Toast Container -->
   <div id="toast-container" class="fixed bottom-24 md:bottom-6 right-6 z-50 space-y-2"></div>

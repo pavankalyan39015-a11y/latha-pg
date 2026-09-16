@@ -15,6 +15,7 @@ from app.routers import (
     maintenance_router,
     meals_router,
     dashboard_router,
+    booking_router,
 )
 
 @asynccontextmanager
@@ -49,6 +50,8 @@ app.include_router(tenants_router, prefix=api_v1_prefix)
 app.include_router(billing_router, prefix=api_v1_prefix)
 app.include_router(maintenance_router, prefix=api_v1_prefix)
 app.include_router(meals_router, prefix=api_v1_prefix)
+app.include_router(booking_router, prefix=api_v1_prefix)
+
 
 # Mount Static Dashboard SPA
 static_dir = os.path.join(os.path.dirname(__file__), "static")

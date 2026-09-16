@@ -3,7 +3,13 @@ from app.schemas.tenant import TenantBase, TenantCreate, TenantUpdate, TenantRes
 from app.schemas.billing import InvoiceBase, InvoiceCreate, InvoiceResponse, InvoiceDetailResponse, PaymentBase, PaymentCreate, PaymentResponse, TenantDuesResponse
 from app.schemas.maintenance import MaintenanceTicketBase, MaintenanceTicketCreate, MaintenanceTicketUpdate, MaintenanceTicketResponse
 from app.schemas.meal import MealMenuBase, MealMenuCreate, MealMenuResponse, MealAttendanceBase, MealAttendanceCreate, MealAttendanceResponse, DailyMealHeadcount
-from app.schemas.dashboard import DashboardSummary
+from app.schemas.booking import (
+    BookingInquiryBase,
+    BookingInquiryCreate,
+    BookingInquiryUpdate,
+    BookingInquiryResponse,
+    ConvertToTenantRequest,
+)
 
 __all__ = [
     "BedBase", "BedCreate", "BedUpdate", "BedResponse",
@@ -16,4 +22,6 @@ __all__ = [
     "MealMenuBase", "MealMenuCreate", "MealMenuResponse",
     "MealAttendanceBase", "MealAttendanceCreate", "MealAttendanceResponse", "DailyMealHeadcount",
     "DashboardSummary",
+    "BookingInquiryBase", "BookingInquiryCreate", "BookingInquiryUpdate", "BookingInquiryResponse", "ConvertToTenantRequest",
 ]
+

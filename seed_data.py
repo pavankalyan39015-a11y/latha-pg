@@ -6,6 +6,7 @@ from app.models.tenant import Tenant, TenantDocument
 from app.models.billing import Invoice, Payment
 from app.models.maintenance import MaintenanceTicket
 from app.models.meal import MealMenu, MealAttendance
+from app.models.booking import BookingInquiry
 
 def seed_database(force: bool = False):
     print("Initializing database tables...")
@@ -16,8 +17,62 @@ def seed_database(force: bool = False):
         if not force:
             existing_room = db.query(Room).first()
             if existing_room:
-                print("Database already contains records. Skipping seed.")
+                # Check if inquiries are present
+                if db.query(BookingInquiry).count() == 0:
+                    print("Seeding initial booking inquiries into existing database...")
+                    inquiries = [
+                        BookingInquiry(
+                            reference_code="LATHA-BKG-1042",
+                            full_name="Karthik Reddy",
+                            phone="9876543290",
+                            email="karthik.reddy@example.com",
+                            room_type="2-Sharing AC",
+                            sharing_preference="2 Sharing",
+                            preferred_move_in_date=(date.today() + timedelta(days=3)).strftime("%Y-%m-%d"),
+                            status="NEW",
+                            notes="Working at Manyata Tech Park. Looking for early morning hot water.",
+                        ),
+                        BookingInquiry(
+                            reference_code="LATHA-BKG-2158",
+                            full_name="Abhishek Verma",
+                            phone="9823456711",
+                            email="abhishek.v@example.com",
+                            room_type="3-Sharing Non-AC",
+                            sharing_preference="3 Sharing",
+                            preferred_move_in_date=(date.today() + timedelta(days=5)).strftime("%Y-%m-%d"),
+                            status="CONTACTED",
+                            notes="Spoke over phone. Scheduled visit for tomorrow evening 6 PM.",
+                        ),
+                        BookingInquiry(
+                            reference_code="LATHA-BKG-3391",
+                            full_name="Praveen Kumar",
+                            phone="9745612300",
+                            email="praveen.k@example.com",
+                            room_type="2-Sharing AC",
+                            sharing_preference="2 Sharing",
+                            preferred_move_in_date=(date.today() + timedelta(days=1)).strftime("%Y-%m-%d"),
+                            status="VISITED",
+                            notes="Liked room 101, token advance expected.",
+                        ),
+                        BookingInquiry(
+                            reference_code="LATHA-BKG-4820",
+                            full_name="Sanjay Hegde",
+                            phone="9612389045",
+                            email="sanjay.hegde@example.com",
+                            room_type="4-Sharing Non-AC",
+                            sharing_preference="4 Sharing",
+                            preferred_move_in_date=(date.today() - timedelta(days=2)).strftime("%Y-%m-%d"),
+                            status="BOOKED",
+                            notes="Admitted as resident.",
+                        ),
+                    ]
+                    db.add_all(inquiries)
+                    db.commit()
+                    print("Booking inquiries added successfully.")
+                else:
+                    print("Database already contains records. Skipping seed.")
                 return
+
 
         if force:
             print("Force flag set: Recreating tables...")
@@ -341,12 +396,60 @@ def seed_database(force: bool = False):
             MealAttendance(date=today, meal_type="DINNER", tenant_id=t4.id, is_attending=True, wants_packed_meal=False),
             MealAttendance(date=today, meal_type="DINNER", tenant_id=t5.id, is_attending=True, wants_packed_meal=False),
         ]
-        db.add_all(attendances)
+        print("Seeding Sample Booking Inquiries...")
+        inquiries = [
+            BookingInquiry(
+                reference_code="LATHA-BKG-1042",
+                full_name="Karthik Reddy",
+                phone="9876543290",
+                email="karthik.reddy@example.com",
+                room_type="2-Sharing AC",
+                sharing_preference="2 Sharing",
+                preferred_move_in_date=(date.today() + timedelta(days=3)).strftime("%Y-%m-%d"),
+                status="NEW",
+                notes="Working at Manyata Tech Park. Looking for early morning hot water.",
+            ),
+            BookingInquiry(
+                reference_code="LATHA-BKG-2158",
+                full_name="Abhishek Verma",
+                phone="9823456711",
+                email="abhishek.v@example.com",
+                room_type="3-Sharing Non-AC",
+                sharing_preference="3 Sharing",
+                preferred_move_in_date=(date.today() + timedelta(days=5)).strftime("%Y-%m-%d"),
+                status="CONTACTED",
+                notes="Spoke over phone. Scheduled visit for tomorrow evening 6 PM.",
+            ),
+            BookingInquiry(
+                reference_code="LATHA-BKG-3391",
+                full_name="Praveen Kumar",
+                phone="9745612300",
+                email="praveen.k@example.com",
+                room_type="2-Sharing AC",
+                sharing_preference="2 Sharing",
+                preferred_move_in_date=(date.today() + timedelta(days=1)).strftime("%Y-%m-%d"),
+                status="VISITED",
+                notes="Visited room 101 yesterday, liked the ventilation and WiFi speed. Advance token expected.",
+            ),
+            BookingInquiry(
+                reference_code="LATHA-BKG-4820",
+                full_name="Sanjay Hegde",
+                phone="9612389045",
+                email="sanjay.hegde@example.com",
+                room_type="4-Sharing Non-AC",
+                sharing_preference="4 Sharing",
+                preferred_move_in_date=(date.today() - timedelta(days=2)).strftime("%Y-%m-%d"),
+                status="BOOKED",
+                notes="Token advance paid. Admitted as resident.",
+            ),
+        ]
+        db.add_all(inquiries)
         db.commit()
 
         print("Mock data seeded successfully!")
     finally:
         db.close()
+
 
 if __name__ == "__main__":
     seed_database()

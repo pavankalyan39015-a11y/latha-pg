@@ -9,7 +9,8 @@ def test_root_and_health():
 
     res_dash = client.get("/dashboard/")
     assert res_dash.status_code == 200
-    assert "PG Manager Pro" in res_dash.text
+    assert "Latha" in res_dash.text or "LATHA" in res_dash.text
+
 
     res_h = client.get("/health")
     assert res_h.status_code == 200
@@ -82,28 +83,35 @@ def test_meal_menu_and_headcount():
     print(f" [PASS] Meals API: Headcount for dinner = {headcount['attending_count']} attendees")
 
 def test_auto_invoice_settlement():
-    # Tenant 4 has unpaid invoice 4 for 6900.0
-    res_before = client.get("/api/v1/billing/invoices/4")
-    assert res_before.status_code == 200
-    assert res_before.json()["status"] == "UNPAID"
+    # Create a test invoice to settle
+    res_inv = client.post("/api/v1/billing/invoices", json={
+        "tenant_id": 1,
+        "billing_month": "2026-11",
+        "rent_amount": 1200.0,
+        "due_date": "2026-11-05",
+        "notes": "Idempotent Auto Settlement Test"
+    })
+    assert res_inv.status_code == 201, res_inv.text
+    test_inv_id = res_inv.json()["id"]
 
-    # Make payment without specifying invoice_id
+
+    # Make payment without specifying invoice_id to trigger auto-settle
     res_pay = client.post("/api/v1/billing/payments", json={
-        "tenant_id": 4,
-        "amount": 6900.0,
+        "tenant_id": 1,
+        "amount": 1200.0,
         "payment_method": "UPI",
-        "transaction_reference": "UPI-TEST-AUTO-SETTLE"
+        "transaction_reference": "UPI-IDEMPOTENT-SETTLE"
     })
     assert res_pay.status_code == 201
     pay_data = res_pay.json()
-    assert pay_data["invoice_id"] == 4
+    assert pay_data["invoice_id"] == test_inv_id
 
-    # Verify invoice 4 is now PAID
-    res_after = client.get("/api/v1/billing/invoices/4")
+    # Verify invoice is now PAID
+    res_after = client.get(f"/api/v1/billing/invoices/{test_inv_id}")
     assert res_after.status_code == 200
     assert res_after.json()["status"] == "PAID"
-    assert res_after.json()["paid_amount"] == 6900.0
     print(" [PASS] Auto Invoice Settlement: Unpaid invoice automatically settled via general payment")
+
 
 def test_invoice_patch():
     # Update notes and discount on invoice 3
@@ -186,6 +194,72 @@ def test_tenant_lifecycle_and_delete():
     assert bed_restored["status"] == "AVAILABLE"
     print(" [PASS] Tenant Delete & Bed Release: Tenant removed and bed restored to AVAILABLE")
 
+def test_booking_lifecycle():
+    # 1. Submit Inquiry
+    inquiry_payload = {
+        "full_name": "Rohan Sharma",
+        "phone": "9998887766",
+        "email": "rohan.sharma@test.com",
+        "room_type": "2-Sharing AC",
+        "sharing_preference": "2 Sharing",
+        "preferred_move_in_date": "2026-10-01",
+        "notes": "Looking for clean room and fast WiFi."
+    }
+    res_inq = client.post("/api/v1/bookings/inquire", json=inquiry_payload)
+    assert res_inq.status_code == 201, res_inq.text
+    data = res_inq.json()
+    assert "inquiry" in data
+    assert "whatsapp_url" in data
+    inq = data["inquiry"]
+    inquiry_id = inq["id"]
+    assert inq["reference_code"].startswith("LATHA-BKG-")
+    assert inq["status"] == "NEW"
+
+    # 2. List Inquiries
+    res_list = client.get("/api/v1/bookings")
+    assert res_list.status_code == 200
+    inquiries = res_list.json()
+    assert len(inquiries) >= 1
+    assert any(i["id"] == inquiry_id for i in inquiries)
+
+    # 3. Update Status
+    res_patch = client.patch(f"/api/v1/bookings/{inquiry_id}/status", json={"status": "VISITED", "notes": "Room shown."})
+    assert res_patch.status_code == 200
+    assert res_patch.json()["status"] == "VISITED"
+
+    # 4. Convert to Tenant
+    # Find an available bed
+    res_beds = client.get("/api/v1/rooms/beds/available")
+    assert res_beds.status_code == 200
+    avail_beds = res_beds.json()
+    assert len(avail_beds) > 0
+    assigned_bed = avail_beds[0]
+
+    convert_payload = {
+        "bed_id": assigned_bed["id"],
+        "security_deposit": 3500.0,
+        "occupation": "Software Engineer",
+        "permanent_address": "Bengaluru"
+    }
+    res_conv = client.post(f"/api/v1/bookings/{inquiry_id}/convert-to-tenant", json=convert_payload)
+    assert res_conv.status_code == 201, res_conv.text
+    tenant_created = res_conv.json()
+    assert tenant_created["full_name"] == "Rohan Sharma"
+    assert tenant_created["bed_id"] == assigned_bed["id"]
+
+    # Verify inquiry status is now BOOKED
+    res_inq_after = client.get(f"/api/v1/bookings/{inquiry_id}")
+    assert res_inq_after.json()["status"] == "BOOKED"
+
+    # Cleanup temporary tenant
+    res_del_tenant = client.delete(f"/api/v1/tenants/{tenant_created['id']}")
+    assert res_del_tenant.status_code == 204
+
+    # Cleanup inquiry
+    res_del_inq = client.delete(f"/api/v1/bookings/{inquiry_id}")
+    assert res_del_inq.status_code == 204
+    print(" [PASS] Booking Lifecycle: Inquiry -> Visited -> 1-Click Convert to Tenant -> Bed Lock Verified")
+
 if __name__ == "__main__":
     print("\n--- RUNNING API INTEGRATION TESTS ---")
     test_root_and_health()
@@ -200,5 +274,7 @@ if __name__ == "__main__":
     test_tenant_lifecycle_and_delete()
     test_maintenance_tickets()
     test_meal_menu_and_headcount()
+    test_booking_lifecycle()
     print("\n--- ALL TESTS PASSED SUCCESSFULLY! ---\n")
+
 

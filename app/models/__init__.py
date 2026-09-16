@@ -4,6 +4,7 @@ from app.models.tenant import Tenant, TenantDocument
 from app.models.billing import Invoice, Payment
 from app.models.maintenance import MaintenanceTicket
 from app.models.meal import MealMenu, MealAttendance
+from app.models.booking import BookingInquiry
 
 __all__ = [
     "Base",
@@ -16,4 +17,6 @@ __all__ = [
     "MaintenanceTicket",
     "MealMenu",
     "MealAttendance",
+    "BookingInquiry",
 ]
+

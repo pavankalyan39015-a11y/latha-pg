@@ -13,6 +13,9 @@ let state = {
   meals: [],
   selectedMealDay: 'MONDAY',
   summary: null,
+  bookings: [],
+  bookingFilter: 'ALL',
+  bookingSearchQuery: '',
 };
 
 // Initialize Application
@@ -31,7 +34,17 @@ document.addEventListener('DOMContentLoaded', () => {
     nextWeek.setDate(nextWeek.getDate() + 7);
     dueDateInput.value = nextWeek.toISOString().split('T')[0];
   }
+
+  // Default dates for booking inquiries
+  const inqDateInput = document.getElementById('inq-date');
+  const adminInqDateInput = document.getElementById('admin-inq-date');
+  const defaultMoveIn = new Date();
+  defaultMoveIn.setDate(defaultMoveIn.getDate() + 3);
+  const defaultMoveInStr = defaultMoveIn.toISOString().split('T')[0];
+  if (inqDateInput) inqDateInput.value = defaultMoveInStr;
+  if (adminInqDateInput) adminInqDateInput.value = defaultMoveInStr;
 });
+
 
 // Toast Notification Helper
 function showToast(message, type = 'success') {
@@ -100,6 +113,7 @@ function switchTab(tabName) {
   const titles = {
     overview: ['Executive Overview', 'Live occupancy, revenue, and PG operations'],
     rooms: ['Room Allocations', '2, 3, and 4-sharing rooms with attached bathrooms'],
+    bookings: ['Room Bookings & Inquiries', 'Manage prospective tenant walk-ins, phone inquiries, and web booking requests'],
     tenants: ['Tenant Registry', 'Guest records, KYC verifications, and room assignments'],
     billing: ['Billing & Collections', 'Monthly rent invoices, payment receipts, and balance dues'],
     complaints: ['Maintenance Requests', 'Plumbing, electrical, Wi-Fi, and cleaning service tickets'],
@@ -116,6 +130,7 @@ function switchTab(tabName) {
   // Refresh tab-specific data
   if (tabName === 'overview') loadOverview();
   else if (tabName === 'rooms') loadRooms();
+  else if (tabName === 'bookings') loadBookings();
   else if (tabName === 'tenants') loadTenants();
   else if (tabName === 'billing') loadBilling();
   else if (tabName === 'complaints') loadComplaints();
@@ -131,6 +146,7 @@ function openModal(id) {
   modal.classList.remove('hidden');
 
   if (id === 'modal-onboard') loadAvailableBedsDropdown();
+  if (id === 'modal-convert-tenant') loadAvailableBedsDropdown('convert-bed-select');
   if (id === 'modal-payment' || id === 'modal-invoice' || id === 'modal-attendance') loadTenantsDropdown();
   if (window.lucide) lucide.createIcons();
 }
@@ -145,12 +161,14 @@ async function refreshAllData() {
   await Promise.all([
     loadOverview(),
     loadRooms(),
+    loadBookings(),
     loadTenants(),
     loadBilling(),
     loadComplaints(),
     loadMeals(),
   ]);
 }
+
 
 // ----------------------------------------------------
 // 1. OVERVIEW TAB
@@ -668,22 +686,24 @@ function renderMealsForDay(day) {
 // ----------------------------------------------------
 // HELPER: POPULATE MODAL DROPDOWNS
 // ----------------------------------------------------
-async function loadAvailableBedsDropdown() {
-  const select = document.getElementById('onboard-bed-select');
+async function loadAvailableBedsDropdown(targetSelectId = 'onboard-bed-select') {
+  const select = document.getElementById(targetSelectId);
   if (!select) return;
   select.innerHTML = '<option value="">Loading available beds...</option>';
   try {
     const res = await fetch(`${API_BASE}/rooms/beds/available`);
     const beds = await res.json();
     if (beds.length === 0) {
-      select.innerHTML = '<option value="">No vacant beds! Create a room first.</option>';
+      select.innerHTML = '<option value="">No vacant beds available right now</option>';
       return;
     }
-    select.innerHTML = beds.map(b => `<option value="${b.id}">Bed ${b.bed_number} (Room ID ${b.room_id})</option>`).join('');
+    select.innerHTML = '<option value="">-- Choose Bed Slot --</option>' + 
+      beds.map(b => `<option value="${b.id}">Bed ${b.bed_number} (Room ID ${b.room_id})</option>`).join('');
   } catch (err) {
     select.innerHTML = '<option value="">Failed to load beds</option>';
   }
 }
+
 
 async function loadTenantsDropdown() {
   const selects = [
@@ -1146,6 +1166,410 @@ function triggerPwaInstall() {
   }
 }
 
+// ----------------------------------------------------
+// 7. BOOKINGS & INQUIRIES MANAGEMENT
+// ----------------------------------------------------
+async function loadBookings() {
+  try {
+    const res = await fetch(`${API_BASE}/bookings`);
+    const data = await res.json();
+    state.bookings = data;
+
+    // Update status badge counts
+    const newCount = data.filter(b => b.status === 'NEW').length;
+    const contactedCount = data.filter(b => b.status === 'CONTACTED').length;
+    const visitedCount = data.filter(b => b.status === 'VISITED').length;
+    const bookedCount = data.filter(b => b.status === 'BOOKED').length;
+
+    const elTotal = document.getElementById('bookings-total-badge');
+    if (elTotal) elTotal.innerText = data.length;
+
+    const elNew = document.getElementById('stat-bookings-new');
+    if (elNew) elNew.innerText = newCount;
+    const elContacted = document.getElementById('stat-bookings-contacted');
+    if (elContacted) elContacted.innerText = contactedCount;
+    const elVisited = document.getElementById('stat-bookings-visited');
+    if (elVisited) elVisited.innerText = visitedCount;
+    const elBooked = document.getElementById('stat-bookings-booked');
+    if (elBooked) elBooked.innerText = bookedCount;
+
+    // Update sidebar navigation notification badge
+    const badgeSidebar = document.getElementById('badge-inquiries-count');
+    if (badgeSidebar) {
+      if (newCount > 0) {
+        badgeSidebar.innerText = newCount;
+        badgeSidebar.classList.remove('hidden');
+      } else {
+        badgeSidebar.classList.add('hidden');
+      }
+    }
+
+    renderBookings();
+  } catch (err) {
+    console.error('Error loading bookings:', err);
+  }
+}
+
+function filterBookings(status) {
+  state.bookingFilter = status;
+  // Update UI pills
+  document.querySelectorAll('#booking-filter-pills button').forEach(btn => {
+    if (btn.getAttribute('data-filter') === status) {
+      btn.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold bg-[#062B63] text-white border border-[#FFD200]';
+    } else {
+      btn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200';
+    }
+  });
+  renderBookings();
+}
+
+function searchBookings(query) {
+  state.bookingSearchQuery = query.toLowerCase().trim();
+  renderBookings();
+}
+
+function renderBookings() {
+  const grid = document.getElementById('bookings-grid');
+  if (!grid) return;
+
+  let list = state.bookings;
+  if (state.bookingFilter !== 'ALL') {
+    list = list.filter(b => b.status === state.bookingFilter);
+  }
+  if (state.bookingSearchQuery) {
+    const q = state.bookingSearchQuery;
+    list = list.filter(b => 
+      b.full_name.toLowerCase().includes(q) ||
+      b.phone.includes(q) ||
+      b.reference_code.toLowerCase().includes(q) ||
+      (b.notes && b.notes.toLowerCase().includes(q))
+    );
+  }
+
+  if (list.length === 0) {
+    grid.innerHTML = `
+      <div class="col-span-full brand-card rounded-2xl p-12 text-center text-slate-400 space-y-3">
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#0B4F9C] mx-auto flex items-center justify-center">
+          <i data-lucide="inbox" class="w-6 h-6"></i>
+        </div>
+        <h4 class="font-extrabold text-slate-700 text-sm">No Inquiries Found</h4>
+        <p class="text-xs text-slate-500 max-w-sm mx-auto">No inquiries match the active filter. Share your room tour portal to capture prospective tenants!</p>
+        <button onclick="openRoomTourModal()" class="px-4 py-2 bg-[#FFD200] text-[#062B63] font-black rounded-xl text-xs shadow-sm hover:bg-yellow-300">
+          Open Room Tour Showcase
+        </button>
+      </div>
+    `;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+
+  grid.innerHTML = list.map(inq => {
+    const cleanPhone = inq.phone.replace(/[^0-9]/g, '');
+    const whatsAppText = encodeURIComponent(
+      `Hello ${inq.full_name}, thank you for your interest in Latha PG (Ref: ${inq.reference_code}). ` +
+      `Regarding your inquiry for ${inq.sharing_preference} (${inq.room_type}) with move-in date around ${inq.preferred_move_in_date}: ` +
+      `We have availability! When would you like to visit for room inspection?`
+    );
+    const waUrl = `https://wa.me/91${cleanPhone.slice(-10)}?text=${whatsAppText}`;
+
+    // Status styling
+    let badgeClass = 'bg-amber-100 text-amber-800 border-amber-300';
+    if (inq.status === 'CONTACTED') badgeClass = 'bg-sky-100 text-sky-800 border-sky-300';
+    else if (inq.status === 'VISITED') badgeClass = 'bg-purple-100 text-purple-800 border-purple-300';
+    else if (inq.status === 'BOOKED') badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-300';
+    else if (inq.status === 'CANCELLED') badgeClass = 'bg-slate-100 text-slate-600 border-slate-300';
+
+    return `
+      <div class="brand-card rounded-2xl p-5 space-y-4 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between border-2 border-slate-200/80">
+        <div>
+          <!-- Card Header -->
+          <div class="flex items-start justify-between gap-2 pb-3 border-b border-slate-100">
+            <div>
+              <span class="text-2xs font-mono font-extrabold text-[#0B4F9C] bg-[#EAF3FA] px-2 py-0.5 rounded-md border border-blue-200">
+                ${inq.reference_code}
+              </span>
+              <h4 class="font-extrabold text-base text-[#062B63] mt-1">${inq.full_name}</h4>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-2xs font-black uppercase border ${badgeClass}">
+              ${inq.status}
+            </span>
+          </div>
+
+          <!-- Inq Info -->
+          <div class="mt-3 space-y-2 text-xs">
+            <div class="flex items-center justify-between text-slate-600">
+              <span class="font-bold flex items-center gap-1.5">
+                <i data-lucide="phone" class="w-3.5 h-3.5 text-[#0B4F9C]"></i>
+                <a href="tel:${inq.phone}" class="hover:text-[#062B63] hover:underline">${inq.phone}</a>
+              </span>
+              ${inq.email ? `<span class="truncate max-w-[120px] text-2xs text-slate-400" title="${inq.email}">${inq.email}</span>` : ''}
+            </div>
+
+            <div class="p-2.5 bg-[#EAF3FA] rounded-xl border border-blue-200/70 space-y-1">
+              <div class="flex items-center justify-between font-bold text-[#062B63] text-2xs">
+                <span>Preference:</span>
+                <span class="text-[#0B4F9C]">${inq.sharing_preference}</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-600 text-2xs">
+                <span>Room Type:</span>
+                <span>${inq.room_type}</span>
+              </div>
+              <div class="flex items-center justify-between text-slate-600 text-2xs">
+                <span>Move-in Date:</span>
+                <span class="font-bold text-[#062B63]">${inq.preferred_move_in_date}</span>
+              </div>
+            </div>
+
+            ${inq.notes ? `
+              <div class="text-2xs text-slate-500 italic bg-slate-50 p-2 rounded-lg border border-slate-200">
+                "${inq.notes}"
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+          <!-- WhatsApp Contact Button -->
+          <a href="${waUrl}" target="_blank" class="px-3 py-1.5 rounded-xl bg-[#10A875] hover:bg-emerald-600 text-white text-2xs font-black flex items-center gap-1 shadow-sm transition" title="Message on WhatsApp">
+            <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+            <span>WhatsApp</span>
+          </a>
+
+          <!-- Status Dropdown -->
+          <select onchange="updateBookingStatus(${inq.id}, this.value)" class="text-2xs font-extrabold bg-slate-100 border border-slate-300 rounded-lg px-2 py-1 text-slate-700 focus:outline-none focus:border-[#0B4F9C]">
+            <option value="NEW" ${inq.status === 'NEW' ? 'selected' : ''}>NEW</option>
+            <option value="CONTACTED" ${inq.status === 'CONTACTED' ? 'selected' : ''}>CONTACTED</option>
+            <option value="VISITED" ${inq.status === 'VISITED' ? 'selected' : ''}>VISITED</option>
+            <option value="BOOKED" ${inq.status === 'BOOKED' ? 'selected' : ''}>BOOKED</option>
+            <option value="CANCELLED" ${inq.status === 'CANCELLED' ? 'selected' : ''}>CANCELLED</option>
+          </select>
+
+          <!-- 1-Click Convert or Admission Info -->
+          ${inq.status !== 'BOOKED' ? `
+            <button onclick="openConvertToTenantModal(${inq.id})" class="px-3 py-1.5 rounded-xl bg-[#0B4F9C] hover:bg-blue-700 text-white text-2xs font-black flex items-center gap-1 shadow-sm transition">
+              <i data-lucide="user-check" class="w-3.5 h-3.5 text-[#FFD200]"></i>
+              <span>Admit Tenant</span>
+            </button>
+          ` : `
+            <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-3xs font-extrabold flex items-center gap-1">
+              <i data-lucide="check" class="w-3 h-3"></i> Admitted
+            </span>
+          `}
+
+          <!-- Delete Inquiry -->
+          <button onclick="deleteBookingInquiry(${inq.id})" class="p-1.5 text-slate-400 hover:text-red-500 transition" title="Delete Inquiry">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+async function updateBookingStatus(inquiryId, newStatus) {
+  try {
+    const res = await fetch(`${API_BASE}/bookings/${inquiryId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus })
+    });
+    if (!res.ok) throw new Error('Failed to update status');
+    showToast(`Inquiry status updated to ${newStatus}`);
+    loadBookings();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+async function deleteBookingInquiry(inquiryId) {
+  if (!confirm('Are you sure you want to delete this booking inquiry?')) return;
+  try {
+    const res = await fetch(`${API_BASE}/bookings/${inquiryId}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete inquiry');
+    showToast('Inquiry removed');
+    loadBookings();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+// Room Tour & Showcase Handlers
+function openRoomTourModal() {
+  openModal('modal-room-tour');
+}
+
+function setTourImage(imgSrc, title, desc, badge) {
+  const heroImg = document.getElementById('tour-hero-img');
+  const heroTitle = document.getElementById('tour-img-title');
+  const heroDesc = document.getElementById('tour-img-desc');
+  const heroBadge = document.getElementById('tour-img-badge');
+
+  if (heroImg) heroImg.src = imgSrc;
+  if (heroTitle) heroTitle.innerText = title;
+  if (heroDesc) heroDesc.innerText = desc;
+  if (heroBadge) heroBadge.innerText = badge;
+
+  // Highlight active thumbnail
+  document.querySelectorAll('.tour-thumb-btn').forEach(btn => {
+    const img = btn.querySelector('img');
+    if (img && img.src.includes(imgSrc.split('/').pop())) {
+      btn.className = 'tour-thumb-btn active rounded-xl overflow-hidden border-2 border-[#FFD200] h-16 relative transition hover:opacity-90';
+    } else {
+      btn.className = 'tour-thumb-btn rounded-xl overflow-hidden border-2 border-transparent hover:border-[#0B4F9C] h-16 relative transition';
+    }
+  });
+}
+
+function selectSharingPreference(sharingVal) {
+  const select = document.getElementById('inq-sharing');
+  if (select) select.value = sharingVal;
+  const nameInput = document.getElementById('inq-name');
+  if (nameInput) {
+    nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    nameInput.focus();
+  }
+  showToast(`Selected ${sharingVal}. Fill your name to confirm inquiry!`, 'info');
+}
+
+async function handlePublicBookingInquiry(event) {
+  event.preventDefault();
+  const form = event.target;
+  const btn = document.getElementById('btn-submit-inquiry');
+  if (btn) btn.disabled = true;
+
+  const payload = {
+    full_name: form.full_name.value.trim(),
+    phone: form.phone.value.trim(),
+    email: form.email.value.trim() || null,
+    sharing_preference: form.sharing_preference.value,
+    room_type: form.room_type.value,
+    preferred_move_in_date: form.preferred_move_in_date.value,
+    notes: form.notes.value.trim() || null,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/bookings/inquire`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Inquiry submission failed');
+    }
+    const result = await res.json();
+    const inq = result.inquiry;
+
+    showToast(`Inquiry Confirmed! Ref: ${inq.reference_code}`, 'success');
+    closeModal('modal-room-tour');
+    form.reset();
+
+    // Offer to open WhatsApp
+    if (result.whatsapp_url && confirm(`Inquiry Registered!\nReference: ${inq.reference_code}\n\nWould you like to open WhatsApp to chat with Latha PG Manager now?`)) {
+      window.open(result.whatsapp_url, '_blank');
+    }
+
+    loadBookings();
+  } catch (err) {
+    showToast(err.message, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function handleAdminNewInquiry(event) {
+  event.preventDefault();
+  const form = event.target;
+
+  const payload = {
+    full_name: form.full_name.value.trim(),
+    phone: form.phone.value.trim(),
+    email: form.email.value.trim() || null,
+    sharing_preference: form.sharing_preference.value,
+    room_type: form.room_type.value,
+    preferred_move_in_date: form.preferred_move_in_date.value,
+    notes: form.notes.value.trim() || null,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/bookings/inquire`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Failed to save inquiry');
+    }
+    showToast('Walk-in inquiry recorded successfully');
+    closeModal('modal-new-inquiry');
+    form.reset();
+    loadBookings();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+function openConvertToTenantModal(inquiryId) {
+  const inq = state.bookings.find(b => b.id === inquiryId);
+  if (!inq) return;
+
+  const inputId = document.getElementById('convert-inquiry-id');
+  const nameEl = document.getElementById('convert-lead-name');
+  const refEl = document.getElementById('convert-lead-ref');
+  const contactEl = document.getElementById('convert-lead-contact');
+
+  if (inputId) inputId.value = inq.id;
+  if (nameEl) nameEl.innerText = inq.full_name;
+  if (refEl) refEl.innerText = inq.reference_code;
+  if (contactEl) contactEl.innerText = `Phone: ${inq.phone} | Requested: ${inq.sharing_preference} (${inq.room_type})`;
+
+  // Load available beds dropdown
+  loadAvailableBedsDropdown('convert-bed-select');
+  openModal('modal-convert-tenant');
+}
+
+async function handleConvertInquiryToTenant(event) {
+  event.preventDefault();
+  const form = event.target;
+  const inquiryId = form.inquiry_id.value;
+
+  const payload = {
+    bed_id: parseInt(form.bed_id.value, 10),
+    security_deposit: parseFloat(form.security_deposit.value),
+    occupation: form.occupation.value.trim() || null,
+    emergency_contact_name: form.emergency_contact_name.value.trim() || null,
+    emergency_contact_phone: form.emergency_contact_phone.value.trim() || null,
+  };
+
+  try {
+    const res = await fetch(`${API_BASE}/bookings/${inquiryId}/convert-to-tenant`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Conversion failed');
+    }
+    const tenant = await res.json();
+    showToast(`Resident ${tenant.full_name} admitted successfully!`, 'success');
+    closeModal('modal-convert-tenant');
+    form.reset();
+
+    // Refresh all affected views
+    loadBookings();
+    loadTenants();
+    loadRooms();
+    loadOverview();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
 // Service Worker Registration
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -1154,3 +1578,4 @@ if ('serviceWorker' in navigator) {
       .catch((err) => console.warn('PWA Service Worker registration failed:', err));
   });
 }
+
