@@ -9,6 +9,7 @@ __pycache__/
 cloudflared.exe
 *.msi
 *.zip
+*.apk
 mobile_qr.html
 mobile_qr.png
 mingit.zip
