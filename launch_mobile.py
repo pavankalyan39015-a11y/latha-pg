@@ -6,6 +6,12 @@ import sys
 import qrcode
 import io
 
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 def main():
     print("=" * 60)
     print("      LATHA PG MANAGER - MOBILE ACCESS LAUNCHER")
@@ -113,10 +119,13 @@ def main():
     print("   Scan this QR code with your phone camera:")
     print("-" * 60)
 
-    # Print ASCII QR code in terminal
-    qr = qrcode.QRCode()
-    qr.add_data(dashboard_url)
-    qr.print_ascii(invert=True)
+    # Print ASCII QR code in terminal safely
+    try:
+        qr = qrcode.QRCode()
+        qr.add_data(dashboard_url)
+        qr.print_ascii(invert=True)
+    except Exception:
+        pass
 
     print("-" * 60)
     print(f"   URL: {dashboard_url}")
